@@ -1,1 +1,3182 @@
+ <!-- 
+    PROJECT: JARVIS AI ASSISTANT - ADMIN PANEL
+    PLATFORM: CROSS-PLATFORM (MOBILE + PC WEB APP)
+    TYPE: SINGLE FILE HTML (NO EXTERNAL DEPENDENCIES EXCL. FIREBASE)
+    DEVELOPER: AKSHAY
+    VERSION: 1.0.0 (ENTERPRISE ROYAL EDITION)
+    
+    ---------------------------------------------------------------------
+    PART 1: DOCTYPE, HEAD, CSS VARIABLES, ANIMATION ENGINE, BASE STYLES
+    ---------------------------------------------------------------------
+-->
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="theme-color" content="#0a0a12">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="Jarvis AI Admin Panel - Created by Akshay">
+    
+    <title>Jarvis AI | Royal Admin Terminal</title>
+
+    <!-- GOOGLE FONTS: RAJDHANI (FUTURISTIC) & ROBOTO (READABILITY) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- FONT AWESOME (CDN for Icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* ==========================================================================
+           1.0 - CSS ROOT VARIABLES & THEME CONFIGURATION
+           ========================================================================== */
+        :root {
+            /* 
+               COLOR PALETTE - ROYAL DARK THEME 
+               Designed for OLED Screens and High-Contrast Accessibility
+            */
+            --color-background-primary: #050507;
+            --color-background-secondary: #0a0a12;
+            --color-background-tertiary: #11111e;
+            
+            --color-surface-glass: rgba(20, 20, 35, 0.6);
+            --color-surface-glass-border: rgba(255, 255, 255, 0.08);
+            
+            --color-primary-cyan: #00f3ff;
+            --color-primary-cyan-dim: rgba(0, 243, 255, 0.2);
+            --color-primary-cyan-glow: rgba(0, 243, 255, 0.6);
+            
+            --color-royal-purple: #7d2ae8;
+            --color-royal-purple-deep: #4a148c;
+            --color-royal-purple-glow: rgba(125, 42, 232, 0.5);
+
+            --color-accent-gold: #ffd700;
+            --color-accent-gold-dim: rgba(255, 215, 0, 0.2);
+
+            --color-status-success: #00e676;
+            --color-status-warning: #ffea00;
+            --color-status-danger: #ff1744;
+            --color-status-info: #2979ff;
+
+            --color-text-primary: #ffffff;
+            --color-text-secondary: #b0b0c0;
+            --color-text-muted: #606070;
+
+            /* 
+               DIMENSIONS & SPACING 
+               Standardized for Touch Targets on Mobile
+            */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-xxl: 64px;
+
+            --border-radius-sm: 8px;
+            --border-radius-md: 16px;
+            --border-radius-lg: 24px;
+            --border-radius-circle: 50%;
+
+            /* 
+               ELEVATION & SHADOWS 
+               Neon Glow Effects
+            */
+            --shadow-subtle: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            --shadow-neon-cyan: 0 0 10px var(--color-primary-cyan-dim), 0 0 20px var(--color-primary-cyan-dim);
+            --shadow-neon-purple: 0 0 10px var(--color-royal-purple-glow), 0 0 20px var(--color-royal-purple-glow);
+
+            /* 
+               TYPOGRAPHY 
+            */
+            --font-main: 'Rajdhani', sans-serif;
+            --font-body: 'Roboto', sans-serif;
+            
+            --font-size-xs: 12px;
+            --font-size-sm: 14px;
+            --font-size-md: 16px;
+            --font-size-lg: 20px;
+            --font-size-xl: 24px;
+            --font-size-xxl: 32px;
+            --font-size-display: 48px;
+
+            /* 
+               ANIMATION TIMINGS 
+            */
+            --anim-speed-fast: 0.2s;
+            --anim-speed-normal: 0.4s;
+            --anim-speed-slow: 0.8s;
+            --anim-ease-royal: cubic-bezier(0.23, 1, 0.32, 1);
+            --anim-ease-bounce: cubic-bezier(0.68, -0.55, 0.27, 1.55);
+
+            /* 
+               Z-INDEX LAYERS 
+            */
+            --z-background: -1;
+            --z-content: 10;
+            --z-nav: 100;
+            --z-overlay: 1000;
+            --z-modal: 2000;
+            --z-toast: 3000;
+            --z-loader: 9999;
+        }
+
+        /* ==========================================================================
+           2.0 - CSS RESET & BASE STYLES
+           ========================================================================== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            outline: none;
+            -webkit-tap-highlight-color: transparent; /* Remove blue highlight on mobile */
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            background-color: var(--color-background-primary);
+            color: var(--color-text-primary);
+            font-family: var(--font-body);
+            font-size: 16px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            user-select: none; /* Prevent text selection for App-like feel */
+        }
+
+        /* Allow text selection in inputs only */
+        input, textarea, [contenteditable="true"] {
+            user-select: text;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+        }
+
+        button {
+            border: none;
+            background: none;
+            font-family: var(--font-main);
+            cursor: pointer;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--color-background-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--color-surface-glass-border);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--color-primary-cyan);
+        }
+
+        /* ==========================================================================
+           3.0 - ADVANCED ANIMATION ENGINE (KEYFRAMES)
+           ========================================================================== */
+        
+        /* 3.1 - Fade In Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* 3.2 - Fade Out Animation */
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+
+        /* 3.3 - Slide Up Entry */
+        @keyframes slideUpFade {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 3.4 - Scale In (Pop) */
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* 3.5 - Neon Pulse (Breathing Glow) */
+        @keyframes neonPulseCyan {
+            0% {
+                box-shadow: 0 0 5px var(--color-primary-cyan-dim);
+            }
+            50% {
+                box-shadow: 0 0 20px var(--color-primary-cyan-glow), 0 0 10px var(--color-primary-cyan);
+            }
+            100% {
+                box-shadow: 0 0 5px var(--color-primary-cyan-dim);
+            }
+        }
+
+        @keyframes neonPulseRed {
+            0% {
+                box-shadow: 0 0 5px rgba(255, 23, 68, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(255, 23, 68, 0.6), 0 0 10px rgba(255, 23, 68, 1);
+            }
+            100% {
+                box-shadow: 0 0 5px rgba(255, 23, 68, 0.2);
+            }
+        }
+
+        /* 3.6 - Rotating Border / Spinner */
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spinReverse {
+            0% {
+                transform: rotate(360deg);
+            }
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+
+        /* 3.7 - Scanner Line (Jarvis HUD effect) */
+        @keyframes scanlineMove {
+            0% {
+                top: 0%;
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                top: 100%;
+                opacity: 0;
+            }
+        }
+
+        /* 3.8 - Hologram Flicker */
+        @keyframes hologramFlicker {
+            0%, 100% { opacity: 1; }
+            3% { opacity: 0.8; }
+            5% { opacity: 1; }
+            10% { opacity: 0.9; }
+            15% { opacity: 1; }
+            30% { opacity: 1; }
+            35% { opacity: 0.4; }
+            40% { opacity: 1; }
+            70% { opacity: 1; }
+            75% { opacity: 0.7; }
+            80% { opacity: 1; }
+        }
+
+        /* 3.9 - Ripple Effect (Click) */
+        @keyframes rippleEffect {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* 3.10 - Text Typing Cursor Blink */
+        @keyframes blinkCursor {
+            0%, 100% { border-color: transparent; }
+            50% { border-color: var(--color-primary-cyan); }
+        }
+
+        /* 3.11 - Floating Animation (For Avatar/Cards) */
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        /* 3.12 - Royal Glitch Effect */
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        /* ==========================================================================
+           4.0 - UTILITY CLASSES
+           ========================================================================== */
+        
+        .hidden {
+            display: none !important;
+        }
+
+        .invisible {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Flexbox Utilities */
+        .flex {
+            display: flex;
+        }
+        .flex-col {
+            flex-direction: column;
+        }
+        .flex-row {
+            flex-direction: row;
+        }
+        .flex-center {
+            justify-content: center;
+            align-items: center;
+        }
+        .flex-between {
+            justify-content: space-between;
+            align-items: center;
+        }
+        .flex-start {
+            justify-content: flex-start;
+            align-items: flex-start;
+        }
+        .flex-end {
+            justify-content: flex-end;
+            align-items: flex-end;
+        }
+        .flex-wrap {
+            flex-wrap: wrap;
+        }
+        .gap-sm { gap: var(--spacing-sm); }
+        .gap-md { gap: var(--spacing-md); }
+        .gap-lg { gap: var(--spacing-lg); }
+
+        /* Text Utilities */
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        .text-right { text-align: right; }
+        
+        .text-cyan { color: var(--color-primary-cyan); }
+        .text-purple { color: var(--color-royal-purple); }
+        .text-gold { color: var(--color-accent-gold); }
+        .text-danger { color: var(--color-status-danger); }
+        .text-success { color: var(--color-status-success); }
+        .text-muted { color: var(--color-text-muted); }
+
+        .font-main { font-family: var(--font-main); }
+        .font-body { font-family: var(--font-body); }
+        
+        .font-bold { font-weight: 700; }
+        .font-light { font-weight: 300; }
+
+        .uppercase { text-transform: uppercase; }
+        .capitalize { text-transform: capitalize; }
+
+        /* Background Utilities */
+        .bg-glass {
+            background: var(--color-surface-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--color-surface-glass-border);
+        }
+
+        /* Positioning */
+        .absolute { position: absolute; }
+        .relative { position: relative; }
+        .fixed { position: fixed; }
+        .w-full { width: 100%; }
+        .h-full { height: 100%; }
+        .z-10 { z-index: 10; }
+        .z-20 { z-index: 20; }
+        
+        /* ==========================================================================
+           5.0 - UI COMPONENT STYLES
+           ========================================================================== */
+
+        /* 5.1 - Royal Buttons */
+        .btn {
+            position: relative;
+            padding: 12px 24px;
+            font-size: var(--font-size-md);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: var(--border-radius-sm);
+            overflow: hidden;
+            transition: all var(--anim-speed-fast) var(--anim-ease-royal);
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .btn:active::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* Primary Button (Cyan) */
+        .btn-primary {
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--color-primary-cyan);
+            border: 1px solid var(--color-primary-cyan);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.1);
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-cyan);
+            color: #000;
+            box-shadow: var(--shadow-neon-cyan);
+            transform: translateY(-2px);
+        }
+
+        /* Secondary Button (Purple) */
+        .btn-secondary {
+            background: rgba(125, 42, 232, 0.1);
+            color: #fff;
+            border: 1px solid var(--color-royal-purple);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-royal-purple);
+            box-shadow: var(--shadow-neon-purple);
+            transform: translateY(-2px);
+        }
+
+        /* Danger Button */
+        .btn-danger {
+            background: rgba(255, 23, 68, 0.1);
+            color: var(--color-status-danger);
+            border: 1px solid var(--color-status-danger);
+        }
+
+        .btn-danger:hover {
+            background: var(--color-status-danger);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(255, 23, 68, 0.6);
+        }
+
+        /* Ghost Button */
+        .btn-ghost {
+            background: transparent;
+            color: var(--color-text-secondary);
+            border: 1px solid transparent;
+        }
+
+        .btn-ghost:hover {
+            color: var(--color-text-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* 5.2 - Form Inputs */
+        .input-group {
+            position: relative;
+            margin-bottom: var(--spacing-lg);
+            width: 100%;
+        }
+
+        .input-field {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--color-surface-glass-border);
+            border-radius: var(--border-radius-sm);
+            padding: 14px 16px;
+            font-family: var(--font-body);
+            font-size: var(--font-size-md);
+            color: var(--color-text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: var(--color-primary-cyan);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.1);
+            background: rgba(0, 243, 255, 0.02);
+        }
+
+        .input-label {
+            position: absolute;
+            left: 16px;
+            top: 14px;
+            color: var(--color-text-muted);
+            font-size: var(--font-size-md);
+            pointer-events: none;
+            transition: all 0.3s ease;
+            background-color: transparent;
+            padding: 0 4px;
+        }
+
+        /* Floating Label Logic */
+        .input-field:focus ~ .input-label,
+        .input-field:not(:placeholder-shown) ~ .input-label {
+            top: -10px;
+            left: 12px;
+            font-size: var(--font-size-xs);
+            color: var(--color-primary-cyan);
+            background-color: var(--color-background-secondary); /* Mask line behind label */
+        }
+
+        .input-error {
+            color: var(--color-status-danger);
+            font-size: var(--font-size-xs);
+            margin-top: 4px;
+            display: none;
+            padding-left: 4px;
+        }
+
+        /* 5.3 - Cards (Glassmorphism) */
+        .card {
+            background: var(--color-surface-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--color-surface-glass-border);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-glass);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-neon-cyan);
+            border-color: rgba(0, 243, 255, 0.3);
+        }
+
+        /* Card Decorative Line */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--color-primary-cyan), transparent);
+            opacity: 0.5;
+        }
+
+        /* 5.4 - Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: var(--z-modal);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: #12121a;
+            border: 1px solid var(--color-royal-purple);
+            border-radius: var(--border-radius-lg);
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            transform: scale(0.8);
+            transition: all 0.4s var(--anim-ease-bounce);
+            box-shadow: 0 0 50px rgba(125, 42, 232, 0.2);
+            position: relative;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
+
+        .modal-title {
+            font-family: var(--font-main);
+            font-size: var(--font-size-xl);
+            color: var(--color-text-primary);
+            text-transform: uppercase;
+        }
+
+        .modal-close {
+            font-size: 24px;
+            color: var(--color-text-muted);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: var(--color-status-danger);
+        }
+
+        /* 5.5 - Toast Notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: var(--z-toast);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            min-width: 300px;
+            padding: 16px 20px;
+            background: rgba(20, 20, 35, 0.95);
+            border-left: 4px solid;
+            border-radius: 4px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: slideUpFade 0.4s ease forwards;
+            backdrop-filter: blur(10px);
+        }
+
+        .toast-success { border-color: var(--color-status-success); }
+        .toast-error { border-color: var(--color-status-danger); }
+        .toast-info { border-color: var(--color-status-info); }
+        .toast-warning { border-color: var(--color-status-warning); }
+
+        .toast-message {
+            font-family: var(--font-body);
+            font-size: var(--font-size-sm);
+            color: #fff;
+        }
+
+        /* 5.6 - Loading Spinner (Royal Style) */
+        .royal-loader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: var(--z-loader);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loader-ring {
+            width: 80px;
+            height: 80px;
+            border: 4px solid transparent;
+            border-top: 4px solid var(--color-primary-cyan);
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+            position: relative;
+        }
+
+        .loader-ring::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            right: 5px;
+            bottom: 5px;
+            border: 4px solid transparent;
+            border-top: 4px solid var(--color-royal-purple);
+            border-radius: 50%;
+            animation: spinReverse 1s linear infinite;
+        }
+
+        .loader-ring::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            border: 4px solid transparent;
+            border-top: 4px solid var(--color-accent-gold);
+            border-radius: 50%;
+            animation: spin 2s linear infinite;
+        }
+
+        .loader-text {
+            margin-top: 24px;
+            font-family: var(--font-main);
+            font-size: var(--font-size-lg);
+            letter-spacing: 2px;
+            color: var(--color-primary-cyan);
+            text-transform: uppercase;
+            animation: neonPulseCyan 1.5s infinite;
+        }
+/* ==========================================================================
+           6.0 - ULTIMATE MOBILE REPAIR (ZERO OVERLAP VERSION)
+           ========================================================================== */
+        @media (max-width: 768px) {
+            /* 1. Reset Containers */
+            #dashboard-section {
+                display: block !important; /* Flexbox hatao */
+                height: 100vh !important;
+                overflow-x: hidden !important;
+                overflow-y: auto !important;
+            }
+
+            @media (max-width: 768px) {
+            /* 1. Root & Sidebar */
+            :root { --font-size-display: 24px; }
+            
+            #sidebar {
+                position: fixed !important;
+                left: -285px !important;
+                z-index: 9999 !important;
+                height: 100vh !important;
+                transition: left 0.3s ease !important;
+            }
+            #sidebar.active { left: 0 !important; }
+
+            /* 2. Main Layout Fix */
+            main {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+
+            #main-content {
+                padding: 15px !important;
+                /* --- SABSE ZAROORI: NICHE BOHOT SAARI JAGAH --- */
+                padding-bottom: 250px !important; 
+                display: block !important;
+                width: 100% !important;
+            }
+
+            /* 3. Cards Line-up (No Overlap) */
+            .grid-container {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 25px !important;
+            }
+
+            .card {
+                position: relative !important;
+                display: block !important;
+                width: 100% !important;
+                padding: 20px !important;
+                /* Card ke andar button ke niche space */
+                padding-bottom: 60px !important; 
+                margin-bottom: 20px !important;
+            }
+
+            /* 4. Button Visibility Fix */
+            .btn-primary {
+                margin-top: 35px !important;
+                height: 60px !important; /* Button bada kiya */
+                width: 100% !important;
+                display: flex !important;
+                font-weight: bold !important;
+                box-shadow: 0 5px 15px var(--color-primary-cyan-glow) !important;
+            }
+
+            .hidden-mobile { display: none !important; }
+        }
+    </style>
+</head>
+
+<!-- CONTINUE IN NEXT PART -->
+<!-- CONTINUE FROM PART 1 -->
+
+<body>
+
+    <!-- ==========================================================================
+       7.0 - SYSTEM SOUNDS (AUDIO ELEMENTS)
+       ========================================================================== -->
+    <!-- 
+        Note: Actual audio files would be hosted. 
+        For this single-file implementation, we use placeholders or base64 if needed later.
+        Here we define the IDs for JS to hook into.
+    -->
+    <audio id="sound-startup" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2578/2578-preview.mp3"></audio>
+    <audio id="sound-click" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
+    <audio id="sound-success" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/1114/1114-preview.mp3"></audio>
+    <audio id="sound-error" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3"></audio>
+    <audio id="sound-hover" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
+
+    <!-- ==========================================================================
+       8.0 - ROYAL PRELOADER OVERLAY (FULL SCREEN)
+       ========================================================================== -->
+    <div id="royal-preloader" class="royal-loader-container">
+        <!-- Animated Ring System -->
+        <div class="loader-ring"></div>
+        
+        <!-- Central AI Core Graphic -->
+        <div style="position: absolute; width: 40px; height: 40px; background: var(--color-primary-cyan); border-radius: 50%; box-shadow: 0 0 20px var(--color-primary-cyan); animation: hologramFlicker 2s infinite;"></div>
+        
+        <!-- Text with Glitch Effect -->
+        <div class="loader-text" data-text="INITIALIZING JARVIS ADMIN">
+            INITIALIZING JARVIS
+        </div>
+        
+        <!-- Sub-status text -->
+        <div id="loader-status" style="margin-top: 10px; font-family: var(--font-body); font-size: 12px; color: var(--color-text-secondary); letter-spacing: 1px;">
+            ESTABLISHING SECURE UPLINK...
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+       9.0 - AUTHENTICATION SECTION (LOGIN)
+       ========================================================================== -->
+    <section id="auth-section" class="flex-center w-full h-full" style="background: radial-gradient(circle at center, #1a1a2e 0%, #000 100%); display: none;">
+        
+        <!-- Animated Background Particles (CSS/Canvas Placeholder) -->
+        <div class="absolute w-full h-full" style="overflow: hidden; z-index: 0;">
+            <div style="position: absolute; top: 20%; left: 20%; width: 300px; height: 300px; background: var(--color-royal-purple); filter: blur(150px); opacity: 0.2;"></div>
+            <div style="position: absolute; bottom: 20%; right: 20%; width: 300px; height: 300px; background: var(--color-primary-cyan); filter: blur(150px); opacity: 0.1;"></div>
+        </div>
+
+        <!-- Login Card -->
+        <div class="card flex-col gap-lg" style="width: 100%; max-width: 420px; z-index: 10; padding: 40px; border: 1px solid rgba(255,255,255,0.05);">
+            
+            <!-- Header -->
+            <div class="text-center mb-4">
+                <h1 class="font-main text-cyan" style="font-size: 32px; letter-spacing: 2px; text-shadow: 0 0 10px var(--color-primary-cyan-dim);">
+                    JARVIS <span class="text-purple">ADMIN</span>
+                </h1>
+                <p class="text-muted font-body" style="font-size: 14px; margin-top: 5px;">
+                    SECURE ACCESS TERMINAL
+                </p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" onsubmit="event.preventDefault(); handleLogin();">
+                
+                <!-- Email Input -->
+                <div class="input-group">
+                    <input type="email" id="admin-email" class="input-field" placeholder=" " required autocomplete="off">
+                    <label for="admin-email" class="input-label">ADMIN ID / EMAIL</label>
+                    <div class="input-border-anim"></div>
+                </div>
+
+                <!-- Password Input -->
+                <div class="input-group">
+                    <input type="password" id="admin-password" class="input-field" placeholder=" " required autocomplete="off">
+                    <label for="admin-password" class="input-label">ACCESS KEY</label>
+                    <i class="fas fa-eye absolute" style="right: 15px; top: 15px; color: var(--color-text-muted); cursor: pointer;" onclick="togglePasswordVisibility('admin-password')"></i>
+                </div>
+
+                <!-- Security Badge -->
+                <div class="flex-center gap-sm mb-4" style="opacity: 0.7;">
+                    <i class="fas fa-shield-alt text-success"></i>
+                    <span style="font-size: 12px; color: var(--color-text-secondary);">256-BIT ENCRYPTED CONNECTION</span>
+                </div>
+
+                <!-- Action Buttons -->
+                <button type="submit" id="btn-login" class="btn btn-primary w-full shadow-neon-cyan">
+                    <span class="btn-text">INITIATE SESSION</span>
+                    <i class="fas fa-fingerprint"></i>
+                </button>
+
+                <!-- Loading State (Hidden by default) -->
+                <div id="login-loader" class="hidden flex-center gap-sm w-full mt-3">
+                    <div style="width: 20px; height: 20px; border: 2px solid var(--color-primary-cyan); border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                    <span class="text-cyan font-main" style="letter-spacing: 1px;">VERIFYING CREDENTIALS...</span>
+                </div>
+
+            </form>
+
+            <!-- Footer -->
+            <div class="text-center mt-4">
+                <p style="font-size: 11px; color: var(--color-text-muted);">
+                    UNAUTHORIZED ACCESS IS STRICTLY PROHIBITED.<br>
+                    IP ADDRESS WILL BE LOGGED.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+       10.0 - MAIN DASHBOARD LAYOUT (INITIALLY HIDDEN)
+       ========================================================================== -->
+    <div id="dashboard-section" class="flex h-full w-full hidden" style="opacity: 0;">
+        
+        <!-- 10.1 - SIDEBAR NAVIGATION (LEFT PANEL) -->
+        <aside id="sidebar" class="bg-glass flex-col" style="width: 280px; height: 100%; border-right: 1px solid var(--color-surface-glass-border); transition: width 0.3s ease; position: relative; z-index: var(--z-nav);">
+            
+            <!-- Sidebar Header -->
+            <div class="flex-center gap-sm" style="height: 80px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <div style="width: 40px; height: 40px; background: var(--color-primary-cyan); border-radius: 50%; box-shadow: 0 0 15px var(--color-primary-cyan-glow); display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-robot" style="color: #000; font-size: 20px;"></i>
+                </div>
+                <h2 class="font-main text-cyan" style="font-size: 24px; letter-spacing: 1px;">JARVIS</h2>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="flex-col gap-xs" style="flex: 1; padding: 20px 10px; overflow-y: auto;">
+                
+                <!-- Dashboard Item -->
+                <button class="nav-item active" onclick="navigate('dashboard')">
+                    <i class="fas fa-th-large"></i>
+                    <span>COMMAND CENTER</span>
+                </button>
+
+                <!-- Users Item -->
+                <button class="nav-item" onclick="navigate('users')">
+                    <i class="fas fa-users"></i>
+                    <span>USER DATABASE</span>
+                    <span class="badge" id="nav-user-count">0</span>
+                </button>
+
+                <!-- Premium Manager -->
+                <button class="nav-item" onclick="navigate('premium')">
+                    <i class="fas fa-crown text-gold"></i>
+                    <span>PRIVILEGED ACCESS</span>
+                </button>
+
+                <!-- Voice Control -->
+                <button class="nav-item" onclick="navigate('voice')">
+                    <i class="fas fa-microphone-alt"></i>
+                    <span>VOICE MODULES</span>
+                </button>
+
+                <!-- Avatar & Animation -->
+                <button class="nav-item" onclick="navigate('visuals')">
+                    <i class="fas fa-vr-cardboard"></i>
+                    <span>VISUAL MATRIX</span>
+                </button>
+
+                <!-- Analytics -->
+                <button class="nav-item" onclick="navigate('analytics')">
+                    <i class="fas fa-chart-line"></i>
+                    <span>SYSTEM ANALYTICS</span>
+                </button>
+
+                <!-- Terms & Policies -->
+                <button class="nav-item" onclick="navigate('terms')">
+                    <i class="fas fa-file-contract"></i>
+                    <span>LEGAL PROTOCOLS</span>
+                </button>
+
+                <!-- Settings -->
+                <button class="nav-item" onclick="navigate('settings')">
+                    <i class="fas fa-cogs"></i>
+                    <span>GLOBAL CONFIG</span>
+                </button>
+            </nav>
+
+            <!-- Sidebar Footer (Logout) -->
+            <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
+                <button class="btn btn-danger w-full" onclick="handleLogout()">
+                    <i class="fas fa-power-off"></i>
+                    <span>TERMINATE</span>
+                </button>
+                <div class="text-center mt-2">
+                    <span style="font-size: 10px; color: var(--color-text-muted);">V 1.0.0 ROYAL EDITION</span>
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- 10.2 - MAIN CONTENT AREA -->
+        <main class="flex-col w-full h-full relative" style="overflow: hidden;">
+            
+            <!-- TOP HEADER BAR (FIXED) -->
+            <header class="flex-between w-full bg-glass" style="height: 80px; padding: 0 20px; border-bottom: 1px solid var(--color-surface-glass-border); display: flex !important; align-items: center; justify-content: space-between;">
+                
+                <!-- Left: Menu & Title -->
+                <div class="flex-center" style="display: flex; align-items: center; gap: 15px;">
+                    <button class="btn-ghost" onclick="toggleSidebar()" style="padding: 5px; background: none; border: none;">
+                        <i class="fas fa-bars" style="font-size: 24px; color: #00f3ff;"></i>
+                    </button>
+                    <h3 id="page-title" class="font-main text-white" style="font-size: 18px; margin: 0; white-space: nowrap;">COMMAND CENTER</h3>
+                </div>
+
+                <!-- Right: Profile -->
+                <div class="flex-center">
+                    <div style="width: 42px; height: 42px; border-radius: 50%; border: 2px solid #00f3ff; overflow: hidden; background: #222;">
+                        <img src="https://ui-avatars.com/api/?name=Akshay&background=00f3ff&color=000" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                </div>
+            </header>
+            <!-- Dynamic Content Container -->
+            <div id="main-content" class="w-full h-full" style="padding: 30px; overflow-y: auto; position: relative;">
+                
+                <!-- DASHBOARD VIEW (DEFAULT) -->
+                <div id="view-dashboard" class="view-section active-view">
+                    
+                    <!-- Stats Grid -->
+                    <div class="grid-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 30px;">
+                        
+                        <!-- Total Users Card -->
+                        <div class="card stat-card" style="border-left: 4px solid var(--color-primary-cyan);">
+                            <div class="flex-between mb-2">
+                                <span class="text-muted uppercase text-xs font-bold">Total Users</span>
+                                <i class="fas fa-users text-cyan" style="font-size: 20px;"></i>
+                            </div>
+                            <h2 class="font-main text-white" style="font-size: 36px;" id="stat-total-users">--</h2>
+                            <div class="text-success text-xs flex-center gap-xs flex-start mt-1">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>12% this week</span>
+                            </div>
+                        </div>
+
+                        <!-- Premium Users Card -->
+                        <div class="card stat-card" style="border-left: 4px solid var(--color-royal-purple);">
+                            <div class="flex-between mb-2">
+                                <span class="text-muted uppercase text-xs font-bold">Premium Active</span>
+                                <i class="fas fa-crown text-purple" style="font-size: 20px;"></i>
+                            </div>
+                            <h2 class="font-main text-white" style="font-size: 36px;" id="stat-premium-users">--</h2>
+                            <div class="text-purple text-xs flex-center gap-xs flex-start mt-1">
+                                <i class="fas fa-star"></i>
+                                <span>High Value</span>
+                            </div>
+                        </div>
+
+                        <!-- Active Sessions -->
+                        <div class="card stat-card" style="border-left: 4px solid var(--color-status-success);">
+                            <div class="flex-between mb-2">
+                                <span class="text-muted uppercase text-xs font-bold">Active Sessions</span>
+                                <i class="fas fa-signal text-success" style="font-size: 20px;"></i>
+                            </div>
+                            <h2 class="font-main text-white" style="font-size: 36px;" id="stat-active-sessions">--</h2>
+                            <div class="text-muted text-xs mt-1">
+                                Live Realtime Data
+                            </div>
+                        </div>
+
+                        <!-- System Load -->
+                        <div class="card stat-card" style="border-left: 4px solid var(--color-status-warning);">
+                            <div class="flex-between mb-2">
+                                <span class="text-muted uppercase text-xs font-bold">Database Load</span>
+                                <i class="fas fa-database text-warning" style="color: var(--color-status-warning); font-size: 20px;"></i>
+                            </div>
+                            <h2 class="font-main text-white" style="font-size: 36px;">14<span style="font-size: 20px;">ms</span></h2>
+                            <div class="text-success text-xs mt-1">
+                                Optimal Performance
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Recent Activity & Quick Actions -->
+                    <div class="flex-row flex-wrap gap-lg h-full">
+                        
+                        <!-- Recent Registrations List -->
+                        <div class="card" style="flex: 2; min-width: 300px; min-height: 400px;">
+                            <div class="flex-between mb-4">
+                                <h4 class="font-main text-lg text-white">LIVE ACTIVITY FEED</h4>
+                                <button class="btn-ghost btn-sm"><i class="fas fa-sync-alt"></i></button>
+                            </div>
+                            
+                            <!-- Table Header -->
+                            <div class="flex-row text-muted text-xs uppercase font-bold mb-2 pb-2" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                <div style="flex: 1;">User</div>
+                                <div style="flex: 1;">Action</div>
+                                <div style="flex: 1;">Time</div>
+                                <div style="width: 80px;">Status</div>
+                            </div>
+
+                            <!-- Activity Items Container -->
+                            <div id="activity-feed-list" class="flex-col gap-sm overflow-auto" style="max-height: 300px;">
+                                <!-- Dynamic Items will be injected here via JS -->
+                                <div class="flex-center w-full h-full text-muted">
+                                    <i class="fas fa-spinner fa-spin mr-2"></i> Syncing...
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Server Controls -->
+                        <div class="card" style="flex: 1; min-width: 250px;">
+                            <h4 class="font-main text-lg text-white mb-4">SYSTEM OVERRIDE</h4>
+                            
+                            <div class="flex-col gap-md">
+                                <div class="flex-between">
+                                    <span class="text-sm">Maintenance Mode</span>
+                                    <label class="switch">
+                                        <input type="checkbox" id="toggle-maintenance">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+
+                                <div class="flex-between">
+                                    <span class="text-sm">Force Logout All</span>
+                                    <button class="btn btn-danger" style="padding: 5px 10px; font-size: 10px;" onclick="confirmAction('Force Logout All?')">EXECUTE</button>
+                                </div>
+
+                                <div class="flex-between">
+                                    <span class="text-sm">AI Core Status</span>
+                                    <span class="text-success text-xs font-bold">ONLINE</span>
+                                </div>
+
+                                <div class="mt-4 p-3 bg-glass" style="border-radius: 8px;">
+                                    <span class="text-xs text-muted block mb-2">STORAGE USAGE</span>
+                                    <div class="w-full bg-dark" style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px;">
+                                        <div style="width: 34%; height: 100%; background: var(--color-primary-cyan); border-radius: 3px; box-shadow: 0 0 10px var(--color-primary-cyan);"></div>
+                                    </div>
+                                    <div class="text-right text-xs text-cyan mt-1">34% USED</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- END OF VIEW-DASHBOARD -->
+                
+                <!-- Additional Style for Dashboard Nav Items -->
+                <style>
+                    .nav-item {
+                        display: flex;
+                        align-items: center;
+                        gap: 16px;
+                        width: 100%;
+                        padding: 14px 20px;
+                        color: var(--color-text-secondary);
+                        border-radius: 8px;
+                        transition: all 0.3s ease;
+                        font-family: var(--font-body);
+                        font-size: 14px;
+                        position: relative;
+                        overflow: hidden;
+                    }
+
+                    .nav-item:hover {
+                        background: rgba(255, 255, 255, 0.05);
+                        color: #fff;
+                        padding-left: 25px; /* Slide effect */
+                    }
+
+                    .nav-item.active {
+                        background: rgba(0, 243, 255, 0.1);
+                        color: var(--color-primary-cyan);
+                        border-right: 3px solid var(--color-primary-cyan);
+                    }
+
+                    .nav-item.active i {
+                        color: var(--color-primary-cyan);
+                        filter: drop-shadow(0 0 5px var(--color-primary-cyan));
+                    }
+
+                    .nav-item .badge {
+                        margin-left: auto;
+                        background: var(--color-royal-purple);
+                        color: #fff;
+                        font-size: 10px;
+                        padding: 2px 6px;
+                        border-radius: 10px;
+                    }
+
+                    /* Switch Toggle CSS */
+                    .switch {
+                        position: relative;
+                        display: inline-block;
+                        width: 40px;
+                        height: 20px;
+                    }
+                    .switch input { opacity: 0; width: 0; height: 0; }
+                    .slider {
+                        position: absolute;
+                        cursor: pointer;
+                        top: 0; left: 0; right: 0; bottom: 0;
+                        background-color: rgba(255,255,255,0.1);
+                        transition: .4s;
+                        border-radius: 20px;
+                    }
+                    .slider:before {
+                        position: absolute;
+                        content: "";
+                        height: 14px;
+                        width: 14px;
+                        left: 3px;
+                        bottom: 3px;
+                        background-color: white;
+                        transition: .4s;
+                        border-radius: 50%;
+                    }
+                    input:checked + .slider {
+                        background-color: var(--color-primary-cyan);
+                    }
+                    input:checked + .slider:before {
+                        transform: translateX(20px);
+                    }
+                </style>
+                
+<!-- CONTINUE IN NEXT PART -->
+<!-- CONTINUE FROM PART 2 -->
+
+                <!-- ==========================================================================
+                   11.0 - USER MANAGEMENT VIEW
+                   ========================================================================== -->
+                <div id="view-users" class="view-section hidden w-full h-full flex-col">
+                    
+                    <!-- 11.1 - User Toolbar (Search & Filter) -->
+                    <div class="flex-between mb-4 w-full bg-glass p-3 rounded-md">
+                        
+                        <div class="flex-center gap-md">
+                            <!-- Search Bar -->
+                            <div class="input-group mb-0" style="width: 300px;">
+                                <input type="text" id="user-search" class="input-field" placeholder=" " onkeyup="filterUsers()">
+                                <label class="input-label"><i class="fas fa-search"></i> SEARCH DATABASE</label>
+                            </div>
+                            
+                            <!-- Filter Dropdown -->
+                            <select id="user-role-filter" class="input-field" style="width: 150px; padding: 10px;" onchange="filterUsers()">
+                                <option value="all">ALL ROLES</option>
+                                <option value="user">Standard User</option>
+                                <option value="privileged_user">Privileged</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+
+                        <!-- Export / Actions -->
+                        <div class="flex-center gap-sm">
+                            <button class="btn btn-ghost btn-sm" onclick="exportUserList()">
+                                <i class="fas fa-file-csv"></i> EXPORT CSV
+                            </button>
+                            <button class="btn btn-primary btn-sm" onclick="showCreateUserModal()">
+                                <i class="fas fa-plus"></i> NEW USER
+                            </button>
+                        </div>
+
+                    </div>
+
+                    <!-- 11.2 - Users Data Table -->
+                    <div class="card w-full h-full flex-col" style="padding: 0; overflow: hidden;">
+                        
+                        <!-- Table Header -->
+                        <div class="flex-row p-3 bg-dark-secondary text-muted text-xs font-bold uppercase" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <div style="width: 60px;">Avatar</div>
+                            <div style="flex: 2;">Identity (Name/Email)</div>
+                            <div style="flex: 1;">Role & Plan</div>
+                            <div style="flex: 1;">Joined Date</div>
+                            <div style="flex: 1;">Status</div>
+                            <div style="width: 120px; text-align: right;">Actions</div>
+                        </div>
+
+                        <!-- Table Body (Dynamic Content) -->
+                        <div id="users-table-body" class="flex-col w-full overflow-y-auto" style="flex: 1; padding: 10px;">
+                            
+                            <!-- LOADING STATE PLACEHOLDER -->
+                            <div class="flex-center w-full h-full flex-col text-muted">
+                                <div class="loader-ring" style="width: 40px; height: 40px; border-width: 2px;"></div>
+                                <span class="mt-3 text-xs">RETRIEVING ENCRYPTED USER RECORDS...</span>
+                            </div>
+
+                        </div>
+
+                        <!-- Pagination Footer -->
+                        <div class="flex-between p-3 bg-dark-secondary text-xs text-muted" style="border-top: 1px solid rgba(255,255,255,0.1);">
+                            <span id="user-count-display">SHOWING 0 OF 0 RECORDS</span>
+                            <div class="flex-center gap-sm">
+                                <button class="btn-ghost btn-sm" id="prev-page"><i class="fas fa-chevron-left"></i></button>
+                                <span class="text-white">PAGE 1</span>
+                                <button class="btn-ghost btn-sm" id="next-page"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- ==========================================================================
+                   12.0 - PRIVILEGED ACCESS MANAGER (PREMIUM)
+                   ========================================================================== -->
+                <div id="view-premium" class="view-section hidden w-full h-full flex-col">
+                    
+                    <!-- Header Info -->
+                    <div class="flex-between mb-4">
+                        <div>
+                            <h2 class="font-main text-gold text-xl"><i class="fas fa-crown mr-2"></i>PRIVILEGED ACCESS MANAGER</h2>
+                            <p class="text-muted text-sm">Create lifetime premium accounts for Team, Family & Testers.</p>
+                        </div>
+                        <div class="text-gold border border-gold rounded-full px-3 py-1 text-xs">
+                            <i class="fas fa-check-circle"></i> AUTO-BYPASS PAYMENT
+                        </div>
+                    </div>
+
+                    <div class="flex-row gap-lg h-full flex-wrap">
+                        
+                        <!-- 12.1 - Create Privileged User Form -->
+                        <div class="card" style="flex: 1; min-width: 350px; border-color: var(--color-accent-gold);">
+                            <h3 class="font-main text-lg text-white mb-4">GRANT SUPREME ACCESS</h3>
+                            
+                            <form id="create-privileged-form" onsubmit="event.preventDefault(); createPrivilegedUser();">
+                                
+                                <div class="flex-row gap-sm">
+                                    <div class="input-group">
+                                        <input type="text" id="priv-fname" class="input-field" placeholder=" " required>
+                                        <label class="input-label">First Name</label>
+                                    </div>
+                                    <div class="input-group">
+                                        <input type="text" id="priv-lname" class="input-field" placeholder=" " required>
+                                        <label class="input-label">Last Name</label>
+                                    </div>
+                                </div>
+
+                                <div class="input-group">
+                                    <input type="email" id="priv-email" class="input-field" placeholder=" " required autocomplete="off">
+                                    <label class="input-label">Email Address</label>
+                                </div>
+
+                                <div class="input-group">
+                                    <input type="password" id="priv-password" class="input-field" placeholder=" " required minlength="8">
+                                    <label class="input-label">Set Password (Min 8 chars)</label>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="text-xs text-muted uppercase">Access Level</label>
+                                    <div class="flex-col gap-xs mt-2 p-2 bg-dark rounded border border-gray-800">
+                                        <div class="flex-center flex-start gap-sm">
+                                            <i class="fas fa-check text-success"></i> <span class="text-sm">Role: <b>privileged_user</b></span>
+                                        </div>
+                                        <div class="flex-center flex-start gap-sm">
+                                            <i class="fas fa-check text-success"></i> <span class="text-sm">Plan: <b>MAX_PREMIUM</b></span>
+                                        </div>
+                                        <div class="flex-center flex-start gap-sm">
+                                            <i class="fas fa-check text-success"></i> <span class="text-sm">Expiry: <b>NEVER</b></span>
+                                        </div>
+                                        <div class="flex-center flex-start gap-sm">
+                                            <i class="fas fa-check text-success"></i> <span class="text-sm">Ads: <b>DISABLED</b></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn w-full" style="background: var(--color-accent-gold); color: #000; font-weight: bold; box-shadow: 0 0 15px var(--color-accent-gold-dim);">
+                                    <i class="fas fa-magic"></i> GENERATE KEY
+                                </button>
+
+                            </form>
+                        </div>
+
+                        <!-- 12.2 - List of Privileged Users -->
+                        <div class="card flex-col" style="flex: 2; min-width: 400px; padding: 0;">
+                            <div class="p-4 border-b border-gray-800 flex-between">
+                                <h4 class="font-main text-white">ELITE MEMBERS LIST</h4>
+                                <span class="text-xs text-muted">Syncing Realtime...</span>
+                            </div>
+
+                            <div id="privileged-users-list" class="overflow-y-auto p-4 flex-col gap-sm h-full">
+                                <!-- Dynamic List Item Example -->
+                                <!-- 
+                                <div class="p-3 rounded border border-gold-dim bg-glass flex-between">
+                                    <div class="flex-center gap-md">
+                                        <div class="w-8 h-8 rounded-full bg-gold text-black flex-center font-bold">A</div>
+                                        <div>
+                                            <div class="text-white font-bold">Akshay Developer</div>
+                                            <div class="text-xs text-muted">dev@akshay.com</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-gold text-xs font-bold uppercase">MAX PREMIUM</div>
+                                </div> 
+                                -->
+                                <div class="text-center text-muted mt-4">No privileged users found. Create one.</div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- ==========================================================================
+                   13.0 - VOICE & AUDIO CONTROL CENTER
+                   ========================================================================== -->
+                <div id="view-voice" class="view-section hidden w-full h-full flex-col">
+                    
+                    <h2 class="font-main text-cyan text-xl mb-4"><i class="fas fa-microphone-lines mr-2"></i>VOICE SYNTHESIS MODULE</h2>
+                    
+                    <div class="flex-row gap-lg h-full flex-wrap">
+                        
+                        <!-- 13.1 - Global Voice Settings -->
+                        <div class="card" style="flex: 1; min-width: 300px;">
+                            <h3 class="font-main text-white mb-4">SYSTEM CONFIGURATION</h3>
+                            
+                            <!-- Rename Jarvis -->
+                            <div class="input-group mb-6">
+                                <input type="text" id="system-name" class="input-field" placeholder=" " value="Jarvis">
+                                <label class="input-label">Assistant Name (Wake Word)</label>
+                                <p class="text-xs text-muted mt-1">Users can override this if premium.</p>
+                            </div>
+
+                            <!-- Default Language -->
+                            <div class="mb-6">
+                                <label class="text-xs text-muted uppercase mb-2 block">Default Language Engine</label>
+                                <select id="voice-language" class="input-field bg-dark">
+                                    <option value="en-US">English (United States)</option>
+                                    <option value="en-IN">English (India)</option>
+                                    <option value="hi-IN">Hindi (India)</option>
+                                </select>
+                            </div>
+
+                            <!-- Voice Activation Sensitivity -->
+                            <div class="mb-4">
+                                <div class="flex-between mb-2">
+                                    <label class="text-xs text-muted uppercase">Wake Sensitivity</label>
+                                    <span class="text-cyan text-xs">High</span>
+                                </div>
+                                <input type="range" min="1" max="100" value="80" class="w-full" style="accent-color: var(--color-primary-cyan);">
+                            </div>
+
+                            <button class="btn btn-primary w-full mt-4" onclick="saveVoiceSettings()">
+                                <i class="fas fa-save"></i> UPDATE CORE
+                            </button>
+                        </div>
+
+                        <!-- 13.2 - Voice Library -->
+                        <div class="card" style="flex: 2; min-width: 400px;">
+                            <div class="flex-between mb-4">
+                                <h3 class="font-main text-white">VOICE DATABASE</h3>
+                                <button class="btn btn-secondary btn-sm" onclick="triggerVoiceUpload()">
+                                    <i class="fas fa-upload"></i> UPLOAD SAMPLE
+                                </button>
+                                <input type="file" id="voice-upload-input" class="hidden" accept="audio/*">
+                            </div>
+
+                            <div class="grid-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px;">
+                                
+                                <!-- Voice Card 1 -->
+                                <div class="p-3 border border-cyan rounded bg-glass relative overflow-hidden group hover:border-white transition-all cursor-pointer">
+                                    <div class="absolute top-2 right-2 text-cyan"><i class="fas fa-check-circle"></i></div>
+                                    <div class="flex-center flex-col gap-sm">
+                                        <i class="fas fa-robot text-3xl text-cyan mb-2"></i>
+                                        <span class="font-bold text-white">JARVIS (Original)</span>
+                                        <span class="text-xs text-muted">Male • Robotic</span>
+                                    </div>
+                                    <div class="mt-3 flex-center">
+                                        <button class="btn-ghost btn-sm text-xs"><i class="fas fa-play"></i> PREVIEW</button>
+                                    </div>
+                                </div>
+
+                                <!-- Voice Card 2 -->
+                                <div class="p-3 border border-gray-700 rounded bg-glass relative overflow-hidden group hover:border-white transition-all cursor-pointer">
+                                    <div class="flex-center flex-col gap-sm">
+                                        <i class="fas fa-female text-3xl text-purple mb-2"></i>
+                                        <span class="font-bold text-white">FRIDAY</span>
+                                        <span class="text-xs text-muted">Female • Soft</span>
+                                    </div>
+                                    <div class="mt-3 flex-center">
+                                        <button class="btn-ghost btn-sm text-xs"><i class="fas fa-play"></i> PREVIEW</button>
+                                    </div>
+                                </div>
+
+                                <!-- Voice Card 3 -->
+                                <div class="p-3 border border-gray-700 rounded bg-glass relative overflow-hidden group hover:border-white transition-all cursor-pointer">
+                                    <div class="flex-center flex-col gap-sm">
+                                        <i class="fas fa-user-tie text-3xl text-gold mb-2"></i>
+                                        <span class="font-bold text-white">ALFRED</span>
+                                        <span class="text-xs text-muted">Male • British</span>
+                                    </div>
+                                    <div class="mt-3 flex-center">
+                                        <button class="btn-ghost btn-sm text-xs"><i class="fas fa-play"></i> PREVIEW</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- ==========================================================================
+                   14.0 - VISUAL & AVATAR MATRIX
+                   ========================================================================== -->
+                <div id="view-visuals" class="view-section hidden w-full h-full flex-col">
+                    
+                    <h2 class="font-main text-purple text-xl mb-4"><i class="fas fa-vr-cardboard mr-2"></i>VISUAL MATRIX CONTROL</h2>
+
+                    <div class="flex-row gap-lg h-full flex-wrap">
+                        
+                        <!-- 14.1 - Entry Animation Control -->
+                        <div class="card flex-col" style="flex: 1; min-width: 300px;">
+                            <h3 class="font-main text-white mb-4">ENTRY ANIMATION</h3>
+                            
+                            <div class="mb-4">
+                                <label class="text-xs text-muted uppercase block mb-2">Animation Style</label>
+                                <select id="anim-style-select" class="input-field bg-dark" onchange="previewAnimation()">
+                                    <option value="royal_fade">Royal Fade & Slide</option>
+                                    <option value="cyber_grid">Cyber Grid Reveal</option>
+                                    <option value="particle_storm">Particle Storm</option>
+                                    <option value="hologram_scan">Holographic Scan</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="flex-between mb-2">
+                                    <label class="text-xs text-muted uppercase">Animation Duration</label>
+                                    <span class="text-white text-xs" id="anim-duration-val">2.5s</span>
+                                </div>
+                                <input type="range" min="0.5" max="5.0" step="0.1" value="2.5" class="w-full" oninput="document.getElementById('anim-duration-val').innerText = this.value + 's'">
+                            </div>
+
+                            <div class="flex-row gap-sm mt-auto">
+                                <button class="btn btn-secondary flex-1" onclick="previewAnimation()">
+                                    <i class="fas fa-eye"></i> TEST LIVE
+                                </button>
+                                <button class="btn btn-primary flex-1" onclick="saveVisualSettings()">
+                                    <i class="fas fa-save"></i> APPLY
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 14.2 - Avatar Management -->
+                        <div class="card flex-col" style="flex: 1; min-width: 300px;">
+                            <h3 class="font-main text-white mb-4">DEFAULT AVATAR</h3>
+                            
+                            <div class="flex-center flex-col p-4 border border-dashed border-gray-700 rounded mb-4" id="avatar-drop-zone">
+                                <div class="w-24 h-24 rounded-full bg-black border-2 border-cyan flex-center overflow-hidden mb-3 relative">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" id="current-avatar-preview" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-black bg-opacity-50 flex-center opacity-0 hover:opacity-100 transition-opacity cursor-pointer">
+                                        <i class="fas fa-camera text-white"></i>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-muted text-center">Drag & Drop PNG or Click to Upload</p>
+                                <p class="text-xs text-dark text-center mt-1">(Transparent PNG Recommended)</p>
+                            </div>
+                            
+                            <!-- Avatar Commands -->
+                            <div class="mt-2">
+                                <label class="text-xs text-muted uppercase block mb-2">Default Position</label>
+                                <div class="flex-row gap-sm">
+                                    <button class="btn-ghost border border-gray-700 text-xs flex-1 active">CENTER</button>
+                                    <button class="btn-ghost border border-gray-700 text-xs flex-1">TOP-RIGHT</button>
+                                    <button class="btn-ghost border border-gray-700 text-xs flex-1">BOTTOM</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 14.3 - Theme Colors -->
+                        <div class="card flex-col" style="flex: 1; min-width: 300px;">
+                            <h3 class="font-main text-white mb-4">THEME ACCENTS</h3>
+                            
+                            <div class="flex-col gap-md">
+                                <div class="flex-between">
+                                    <span class="text-sm text-muted">Primary Glow</span>
+                                    <input type="color" value="#00f3ff" class="w-8 h-8 rounded cursor-pointer border-none p-0">
+                                </div>
+                                <div class="flex-between">
+                                    <span class="text-sm text-muted">Secondary Accent</span>
+                                    <input type="color" value="#7d2ae8" class="w-8 h-8 rounded cursor-pointer border-none p-0">
+                                </div>
+                                <div class="flex-between">
+                                    <span class="text-sm text-muted">Dark Mode Base</span>
+                                    <input type="color" value="#050507" class="w-8 h-8 rounded cursor-pointer border-none p-0">
+                                </div>
+                            </div>
+
+                            <div class="mt-4 p-3 bg-glass border-l-4 border-warning">
+                                <p class="text-xs text-warning"><i class="fas fa-exclamation-triangle"></i> Changing theme colors will force a reload for all active users.</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- END OF VIEW-VISUALS -->
+
+<!-- CONTINUE IN NEXT PART -->
+<!-- CONTINUE FROM PART 3 -->
+
+                <!-- ==========================================================================
+                   15.0 - SYSTEM ANALYTICS & LOGS
+                   ========================================================================== -->
+                <div id="view-analytics" class="view-section hidden w-full h-full flex-col">
+                    
+                    <h2 class="font-main text-success text-xl mb-4"><i class="fas fa-chart-line mr-2"></i>SYSTEM ANALYTICS MATRIX</h2>
+
+                    <!-- 15.1 - Realtime Performance Graphs (CSS Based) -->
+                    <div class="grid-container mb-6" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                        
+                        <!-- CPU Load -->
+                        <div class="card flex-col flex-center">
+                            <h4 class="text-xs text-muted uppercase mb-3">Server CPU Load</h4>
+                            <div class="relative" style="width: 120px; height: 120px;">
+                                <svg viewBox="0 0 36 36" class="w-full h-full transform rotate-[-90deg]">
+                                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#333" stroke-width="2"/>
+                                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--color-status-success)" stroke-width="2" stroke-dasharray="45, 100" class="animate-pulse"/>
+                                </svg>
+                                <div class="absolute inset-0 flex-center flex-col">
+                                    <span class="text-2xl font-main text-white">45%</span>
+                                    <span class="text-xs text-muted">STABLE</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Memory Usage -->
+                        <div class="card flex-col flex-center">
+                            <h4 class="text-xs text-muted uppercase mb-3">Memory Allocation</h4>
+                            <div class="relative" style="width: 120px; height: 120px;">
+                                <svg viewBox="0 0 36 36" class="w-full h-full transform rotate-[-90deg]">
+                                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#333" stroke-width="2"/>
+                                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--color-royal-purple)" stroke-width="2" stroke-dasharray="70, 100" class="animate-pulse"/>
+                                </svg>
+                                <div class="absolute inset-0 flex-center flex-col">
+                                    <span class="text-2xl font-main text-white">1.2GB</span>
+                                    <span class="text-xs text-muted">/ 4GB</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Network Latency -->
+                        <div class="card flex-col flex-center">
+                            <h4 class="text-xs text-muted uppercase mb-3">Network Latency</h4>
+                            <div class="relative" style="width: 120px; height: 120px;">
+                                <svg viewBox="0 0 36 36" class="w-full h-full transform rotate-[-90deg]">
+                                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#333" stroke-width="2"/>
+                                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--color-primary-cyan)" stroke-width="2" stroke-dasharray="15, 100" class="animate-pulse"/>
+                                </svg>
+                                <div class="absolute inset-0 flex-center flex-col">
+                                    <span class="text-2xl font-main text-white">24ms</span>
+                                    <span class="text-xs text-muted">LOW</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- 15.2 - Live Command Terminal -->
+                    <div class="card flex-col flex-1 w-full bg-black border border-gray-800 font-mono" style="min-height: 300px; padding: 0;">
+                        <div class="flex-between p-2 border-b border-gray-800 bg-dark-secondary">
+                            <span class="text-xs text-muted pl-2">LIVE COMMAND STREAM</span>
+                            <div class="flex-center gap-xs pr-2">
+                                <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                            </div>
+                        </div>
+                        <div id="analytics-terminal" class="p-4 overflow-y-auto text-xs flex-col gap-1 text-green-500" style="font-family: 'Courier New', monospace; height: 100%;">
+                            <div class="opacity-50">[SYSTEM] Logger Initialized...</div>
+                            <div class="opacity-75">[AUTH] Admin logged in from IP 192.168.1.1</div>
+                            <div><span class="text-cyan">[USER-102]</span> Command: "Turn on lights"</div>
+                            <div><span class="text-purple">[USER-PREM]</span> Command: "Play music"</div>
+                            <div><span class="text-cyan">[USER-889]</span> Command: "Set alarm 7 AM"</div>
+                            <div class="animate-pulse">_</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ==========================================================================
+                   16.0 - TERMS & CONDITIONS MANAGER
+                   ========================================================================== -->
+                <div id="view-terms" class="view-section hidden w-full h-full flex-col">
+                    
+                    <div class="flex-between mb-4">
+                        <h2 class="font-main text-white text-xl"><i class="fas fa-file-contract mr-2"></i>LEGAL PROTOCOLS</h2>
+                        <span class="text-xs text-muted border border-gray-700 rounded px-2 py-1">Current Version: <span id="current-terms-version" class="text-cyan">v1.0</span></span>
+                    </div>
+
+                    <div class="flex-row gap-lg h-full">
+                        
+                        <!-- Editor -->
+                        <div class="card flex-col flex-1 h-full">
+                            <h3 class="text-sm text-muted uppercase mb-2">Edit Terms Content (HTML Supported)</h3>
+                            <textarea id="terms-editor" class="w-full h-full bg-dark border border-gray-800 rounded p-3 text-white font-mono text-sm resize-none focus:border-cyan outline-none" placeholder="<p>Enter terms here...</p>">
+<h2>1. Introduction</h2>
+<p>By using Jarvis, you agree to allow AI processing of your commands.</p>
+<h2>2. Privacy</h2>
+<p>We do not store voice data locally.</p>
+                            </textarea>
+                        </div>
+
+                        <!-- Controls -->
+                        <div class="card flex-col w-1/3 min-w-[300px]">
+                            <h3 class="font-main text-white mb-4">PUBLISH UPDATE</h3>
+                            
+                            <div class="mb-4">
+                                <label class="text-xs text-muted uppercase">Version Number</label>
+                                <input type="number" id="terms-version-input" class="input-field mt-1" step="0.1" value="1.1">
+                            </div>
+
+                            <div class="p-3 bg-glass border-l-4 border-danger mb-4">
+                                <p class="text-xs text-danger font-bold">WARNING:</p>
+                                <p class="text-xs text-muted mt-1">Updating terms will force ALL users to re-accept the agreement on their next login. They cannot skip this.</p>
+                            </div>
+
+                            <button class="btn btn-primary w-full" onclick="publishTerms()">
+                                <i class="fas fa-upload"></i> PUSH UPDATE
+                            </button>
+
+                            <div class="mt-auto text-center">
+                                <span class="text-xs text-muted">Last Updated: <span id="terms-last-date">--</span></span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+         <!-- ==========================================================================
+   17.0 - GLOBAL CONFIGURATION (FINAL CLEAN & SINGLE)
+   ========================================================================== -->
+<div id="view-settings" class="view-section hidden w-full h-full flex-col">
+    
+    <h2 class="font-main text-white text-xl mb-6"><i class="fas fa-cogs mr-2 text-cyan"></i>GLOBAL CONFIGURATION</h2>
+
+    <div class="grid-container" style="display: flex; flex-direction: column; gap: 20px;">
+        
+        <!-- CARD 1: ADMIN SECURITY -->
+        <div class="card">
+            <h3 class="font-main text-white mb-4">ADMIN SECURITY</h3>
+            <form onsubmit="event.preventDefault(); updateAdminPassword();">
+                <div class="input-group">
+                    <input type="password" id="new-admin-pass" class="input-field" placeholder=" ">
+                    <label class="input-label">New Password</label>
+                </div>
+                <button type="submit" class="btn btn-danger w-full">UPDATE CREDENTIALS</button>
+            </form>
+        </div>
+
+        <!-- CARD 2: AI NEURAL ROUTER (ONLY ONE) -->
+        <div class="card" style="border-top: 4px solid var(--color-primary-cyan); padding-bottom: 40px !important;">
+            <h3 class="font-main text-white mb-4"><i class="fas fa-network-wired text-cyan mr-2"></i>AI NEURAL ROUTER</h3>
+            
+            <div class="flex-col gap-md">
+                <div class="input-group">
+                    <input type="text" id="ai-model-primary" class="input-field" value="meta-llama/llama-3.3-70b-instruct:free">
+                    <label class="input-label">Primary Model</label>
+                </div>
+
+                <div class="input-group">
+                    <input type="text" id="ai-model-secondary" class="input-field" value="stepfun/step-3-5-flash:free">
+                    <label class="input-label">Secondary Model</label>
+                </div>
+
+                <div class="input-group">
+                    <input type="text" id="ai-model-backup" class="input-field" value="google/gemini-2.0-flash-exp:free">
+                    <label class="input-label">Backup Model</label>
+                </div>
+
+                <div class="input-group">
+                    <input type="password" id="openrouter-api-key" class="input-field" placeholder=" ">
+                    <label class="input-label">OpenRouter API Key</label>
+                </div>
+
+                <div class="input-group">
+                    <textarea id="ai-system-prompt" class="input-field" style="height:60px; padding-top:10px;">You are JARVIS, a royal AI by Akshay. Call him Sir.</textarea>
+                    <label class="input-label">Jarvis Personality</label>
+                </div>
+
+                <div class="input-group">
+                    <input type="password" id="weather-api-key" class="input-field" placeholder=" ">
+                    <label class="input-label">OpenWeather API Key</label>
+                </div>
+
+                <button class="btn btn-primary w-full shadow-neon-cyan" onclick="saveAIConfig()" style="margin-top: 20px; height: 50px;">
+                    <i class="fas fa-shield-alt"></i> DEPLOY NEURAL NETWORK
+                </button>
+            </div>
+        </div>
+<!-- JARVIS VOICE LABORATORY -->
+<div class="card" style="border-top: 4px solid var(--color-royal-purple); margin-top: 25px;">
+    <h3 class="font-main text-white mb-4"><i class="fas fa-microphone-alt text-purple mr-2"></i>VOICE LABORATORY</h3>
+    
+    <div class="flex-col gap-md">
+        <!-- Voice Selection -->
+        <div class="input-group">
+            <label class="text-xs text-muted uppercase" style="display:block; margin-bottom:5px;">Select Neural Voice (Male/UK preferred)</label>
+            <select id="voice-selection-list" class="input-field" style="font-size: 13px; padding: 10px;"></select>
+        </div>
+
+        <!-- Pitch & Rate Controls -->
+        <div class="flex-row gap-lg" style="margin-top: 10px;">
+            <div style="flex: 1;">
+                <label class="text-xs text-muted uppercase">Voice Depth (Pitch: 0.8)</label>
+                <input type="range" id="voice-pitch" min="0.5" max="1.5" step="0.1" value="0.8" class="w-full" style="accent-color: var(--color-royal-purple);">
+            </div>
+            <div style="flex: 1;">
+                <label class="text-xs text-muted uppercase">Speed (Rate: 0.9)</label>
+                <input type="range" id="voice-rate" min="0.5" max="1.5" step="0.1" value="0.9" class="w-full" style="accent-color: var(--color-royal-purple);">
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex-col gap-sm" style="margin-top: 15px;">
+            <button class="btn btn-secondary w-full" onclick="testVoice()" style="border-color: var(--color-royal-purple); color: #fff;">
+                <i class="fas fa-play"></i> TEST JARVIS VOICE
+            </button>
+            <button class="btn btn-primary w-full shadow-neon-cyan" onclick="saveVoiceConfig()">
+                <i class="fas fa-lock"></i> LOCK VOICE PROTOCOL
+            </button>
+        </div>
+
+        <!-- Spacer for mobile scrolling -->
+        <div style="height: 20px;"></div>
+    </div>
+</div>
+<!-- GLOBAL APP CONTROLS (Add this inside view-settings grid-container) -->
+<div class="card">
+    <h3 class="font-main text-white mb-4">SYSTEM OVERRIDE</h3>
+    <div class="flex-col gap-md">
+        <div class="flex-between">
+            <span class="text-sm">Maintenance Mode</span>
+            <label class="switch"><input type="checkbox" id="toggle-maintenance"><span class="slider round"></span></label>
+        </div>
+        <div class="flex-between">
+            <span class="text-sm">Allow New Signups</span>
+            <label class="switch"><input type="checkbox" checked id="setting-allow-signup"><span class="slider round"></span></label>
+        </div>
+    </div>
+</div>
+    </div> <!-- End Grid -->
+</div> <!-- End View Settings -->
+    <!-- ==========================================================================
+       18.0 - JAVASCRIPT LOGIC CORE
+       ========================================================================== -->
+    
+    <!-- 18.1 - Firebase SDK Imports (CDN) -->
+    <!-- Using Compat libraries for easier single-file management -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <script>
+        /* 
+           ==========================================================================
+           19.0 - FIREBASE CONFIGURATION (MANUAL EDIT REQUIRED)
+           ==========================================================================
+        */
+        
+        // 🚨 MANUAL EDIT POLICY: LINE 620 TO LINE 635
+        // REPLACE THE BELOW CONFIG OBJECT WITH YOUR ACTUAL FIREBASE PROJECT CONFIG
+        // DO NOT LEAVE DUMMY VALUES IF YOU WANT IT TO WORK
+        
+        const firebaseConfig = {
+  apiKey: "AIzaSyC-rlOHW0rznLyl5qZU9mLyrU9JD3qdk8U",
+  authDomain: "jarvis-ai-akshay-1c1ed.firebaseapp.com",
+  databaseURL: "https://jarvis-ai-akshay-1c1ed-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "jarvis-ai-akshay-1c1ed",
+  storageBucket: "jarvis-ai-akshay-1c1ed.firebasestorage.app",
+  messagingSenderId: "545059680914",
+  appId: "1:545059680914:web:308dbb661debd6c0fd6c4b"
+};
+
+        // Initialize Firebase
+        try {
+            firebase.initializeApp(firebaseConfig);
+            console.log("LOG: Firebase Initialized Successfully");
+        } catch (e) {
+            console.error("CRITICAL ERROR: Firebase Config Invalid", e);
+            alert("SYSTEM ERROR: Firebase Configuration is missing or invalid. Check Console.");
+        }
+
+        // Core References
+        const auth = firebase.auth();
+        const db = firebase.database();
+
+        /* 
+           ==========================================================================
+           20.0 - GLOBAL STATE MANAGEMENT
+           ==========================================================================
+        */
+        
+        let adminState = {
+            isAuthenticated: false,
+            currentUser: null,
+            users: [],
+            privilegedUsers: [],
+            stats: {
+                total: 0,
+                premium: 0,
+                active: 0
+            },
+            currentView: 'dashboard'
+        };
+
+        // DOM Elements Cache
+        const dom = {
+            preloader: document.getElementById('royal-preloader'),
+            authSection: document.getElementById('auth-section'),
+            dashboardSection: document.getElementById('dashboard-section'),
+            loginForm: document.getElementById('login-form'),
+            sidebar: document.getElementById('sidebar'),
+            pageTitle: document.getElementById('page-title'),
+            loaderText: document.getElementById('loader-status'),
+            
+            // Sounds
+            soundClick: document.getElementById('sound-click'),
+            soundSuccess: document.getElementById('sound-success'),
+            soundError: document.getElementById('sound-error'),
+            soundStartup: document.getElementById('sound-startup')
+        };
+
+        /* 
+           ==========================================================================
+           21.0 - AUDIO & ANIMATION UTILITIES
+           ==========================================================================
+        */
+
+        function playSound(type) {
+            try {
+                if(dom[type]) {
+                    dom[type].currentTime = 0;
+                    dom[type].play().catch(e => console.log("Audio play blocked: ", e));
+                }
+            } catch(e) {}
+        }
+
+        function toggleLoader(show, text = "PROCESSING...") {
+            const loader = dom.preloader;
+            const status = dom.loaderText;
+            
+            if (show) {
+                status.innerText = text;
+                loader.classList.remove('hidden');
+                loader.style.opacity = '1';
+                loader.style.display = 'flex';
+            } else {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    loader.classList.add('hidden');
+                }, 500); // Wait for fade out
+            }
+        }
+
+        // Royal Entry Animation Logic
+        function triggerRoyalEntry() {
+            playSound('soundStartup');
+            
+            // Staggered Animation for Dashboard Cards
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100 + (index * 50));
+            });
+        }
+
+        /* 
+          /* 
+           ==========================================================================
+           22.0 - NAVIGATION SYSTEM (FIXED MOBILE VERSION)
+           ==========================================================================
+        */
+
+        // 1. Sidebar Toggle Function (Android Native Style)
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            // 'active' class ko toggle karega jo humne CSS mein banayi hai
+            sidebar.classList.toggle('active');
+            
+            // Audio feedback check
+            if (typeof playSound === 'function') playSound('soundClick');
+        }
+
+        // 2. Navigation Logic
+        function navigate(viewId) {
+            if (typeof playSound === 'function') playSound('soundClick');
+            
+            // Update State
+            adminState.currentView = viewId;
+
+            // Update Sidebar UI
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            const activeNav = document.querySelector(`.nav-item[onclick="navigate('${viewId}')"]`);
+            if(activeNav) activeNav.classList.add('active');
+
+            // Update Page Title
+            const titles = {
+                'dashboard': 'COMMAND CENTER',
+                'users': 'USER DATABASE',
+                'premium': 'PRIVILEGED ACCESS',
+                'voice': 'VOICE MODULES',
+                'visuals': 'VISUAL MATRIX',
+                'analytics': 'SYSTEM ANALYTICS',
+                'terms': 'LEGAL PROTOCOLS',
+                'settings': 'GLOBAL CONFIG'
+            };
+            dom.pageTitle.innerText = titles[viewId] || 'ADMIN PANEL';
+            
+            // Hide all views
+            document.querySelectorAll('.view-section').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('active-view');
+            });
+
+            // Show selected view with animation
+            const targetView = document.getElementById(`view-${viewId}`);
+            if(targetView) {
+                targetView.classList.remove('hidden');
+                setTimeout(() => {
+                    targetView.classList.add('active-view');
+                    // Data loading triggers
+                    if(viewId === 'users') loadUsers();
+                    if(viewId === 'premium') loadPrivilegedUsers();
+                    if(viewId === 'analytics' && typeof startLiveLogs === 'function') startLiveLogs();
+                }, 10);
+            }
+
+            // [CRITICAL FIX]: Mobile par click karte hi sidebar band ho jaye
+            if(window.innerWidth < 768) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.remove('active');
+            }
+        }
+
+<!-- CONTINUE IN NEXT PART -->
+<!-- CONTINUE FROM PART 4 -->
+
+/* ==========================================================
+   23.0 - ROYAL AUTHENTICATION & SECURITY GUARD (FIXED PATH)
+   ========================================================== */
+auth.onAuthStateChanged(async (user) => {
+    if (user) {
+        toggleLoader(true, "VERIFYING COMMANDER...");
+        try {
+            // Path Fix: Aapke DB ke hisaab se 'admin' (singular) use kar rahe hain
+            const adminRef = db.ref('admin/' + user.uid);
+            const snapshot = await adminRef.once('value');
+            const data = snapshot.val();
+
+            console.log("System Check - UID:", user.uid);
+            console.log("System Check - DB Data:", data);
+
+            // logic: .trim() use kiya hai taaki "admin " ka space hat jaye
+            if (data && data.role && data.role.trim() === "admin") {
+                console.log("ACCESS GRANTED: Welcome Akshay.");
+                showToast("Identity Verified. Welcome Commander.", "success");
+                
+                // Dashboard initialize karein
+                initializeAdminSession(user);
+            } else {
+                // Agar email admin@jarvis.com hai toh automatic repair karein
+                if (user.email === "admin@jarvis.com") {
+                    console.log("Auto-Repairing Admin Node...");
+                    await db.ref('admin/' + user.uid).set({
+                        email: user.email,
+                        role: "admin" // Bina space ke save karega
+                    });
+                    initializeAdminSession(user);
+                } else {
+                    alert("DENIED: Access level insufficient.\nRole found: [" + (data ? data.role : "none") + "]");
+                    await auth.signOut();
+                }
+            }
+        } catch (error) {
+            console.error("Critical Auth Error:", error);
+            showToast("System Link Failure", "error");
+            await auth.signOut();
+        }
+    } else {
+        showLoginScreen();
+    }
+});
+
+// 2. Password Eye Toggle Fix
+function togglePasswordVisibility(inputId) {
+    const input = document.getElementById(inputId);
+    if (input.type === "password") {
+        input.type = "text";
+    } else {
+        input.type = "password";
+    }
+}
+
+
+        function showLoginScreen() {
+            // Hide Dashboard, Show Login
+            toggleLoader(false);
+            dom.dashboardSection.classList.add('hidden');
+            dom.dashboardSection.style.opacity = '0';
+            
+            dom.authSection.style.display = 'flex';
+            setTimeout(() => {
+                dom.authSection.style.opacity = '1';
+                dom.authSection.classList.remove('hidden');
+            }, 100);
+        }
+
+        /**
+         * Handle Login Form Submission
+         * Triggers the Royal Authentication Sequence
+         */
+        async function handleLogin() {
+            const email = document.getElementById('admin-email').value;
+            const password = document.getElementById('admin-password').value;
+            const btn = document.getElementById('btn-login');
+            const loader = document.getElementById('login-loader');
+
+            // 1. Validate Input
+            if(!email || !password) {
+                showToast("Access Denied: Missing Credentials", "error");
+                playSound('soundError');
+                return;
+            }
+
+
+
+
+
+
+            // 2. UI Transition to Loading State
+            btn.classList.add('hidden');
+            loader.classList.remove('hidden');
+            playSound('soundClick');
+
+            // 3. Attempt Firebase Login
+            try {
+                // Determine if this is the predefined admin or a firebase user
+                // For this strict app, we rely on Firebase Auth
+                
+                await auth.signInWithEmailAndPassword(email, password);
+                
+                // Success is handled by onAuthStateChanged listener
+                showToast("Identity Verified. Welcome, Admin.", "success");
+                playSound('soundSuccess');
+
+            } catch (error) {
+                // Handle Errors
+                console.error("Login Failed", error);
+                
+                // UI Reset
+                setTimeout(() => {
+                    btn.classList.remove('hidden');
+                    loader.classList.add('hidden');
+                    showToast("Authentication Failed: " + error.message, "error");
+                    playSound('soundError');
+                }, 1000);
+            }
+        }
+
+        /**
+         * Initialize Admin Session
+         * Loads data, hides login, shows dashboard with animation
+         */
+        function initializeAdminSession(user) {
+            adminState.isAuthenticated = true;
+            adminState.currentUser = user;
+
+            // Update UI Profile
+            // (Optional) Fetch profile image if stored
+            
+            // Hide Login
+            dom.authSection.style.opacity = '0';
+            setTimeout(() => {
+                dom.authSection.style.display = 'none';
+                dom.authSection.classList.add('hidden');
+                
+                // Show Dashboard
+                dom.dashboardSection.classList.remove('hidden');
+                dom.dashboardSection.style.display = 'flex';
+                
+                // Trigger Entry Animation
+                setTimeout(() => {
+                    dom.dashboardSection.style.opacity = '1';
+                    triggerRoyalEntry();
+                    
+                    // Load Initial Data
+                    loadDashboardStats();
+                    toggleLoader(false);
+                    
+                }, 100);
+            }, 500);
+        }
+
+        /**
+         * Logout Function
+         * Clears session and returns to login screen
+         */
+        function handleLogout() {
+            if(confirm("Confirm Termination of Admin Session?")) {
+                toggleLoader(true, "TERMINATING SESSION...");
+                
+                setTimeout(() => {
+                    auth.signOut().then(() => {
+                        window.location.reload(); // Force reload to clear memory
+                    });
+                }, 1000);
+            }
+        }
+
+        /* 
+           ==========================================================================
+           24.0 - DASHBOARD STATISTICS ENGINE
+           ==========================================================================
+        */
+
+        function loadDashboardStats() {
+            const usersRef = db.ref('users');
+            
+            // Listen for value changes (Realtime)
+            usersRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                
+                let totalUsers = 0;
+                let premiumUsers = 0;
+                let activeSessions = 0; // Simulated or based on 'lastOnline'
+                
+                // Reset Activity Feed
+                const activityFeed = document.getElementById('activity-feed-list');
+                activityFeed.innerHTML = '';
+                
+                if (data) {
+                    const usersArray = Object.entries(data);
+                    totalUsers = usersArray.length;
+                    
+                    // Sort by date (newest first) for feed
+                    usersArray.sort((a, b) => {
+                        return new Date(b[1].createdAt) - new Date(a[1].createdAt);
+                    });
+
+                    usersArray.forEach(([id, user]) => {
+                        // Count Premium
+                        if (user.role === 'privileged_user' || user.plan === 'premium') {
+                            premiumUsers++;
+                        }
+                        
+                        // Count Active (Mock logic: created in last 24h or online flag)
+                        // In real app, check 'lastActive' timestamp
+                        activeSessions++; 
+
+                        // Populate Activity Feed (Limit to 10)
+                        if (activityFeed.children.length < 10) {
+                            const feedItem = createActivityItem(user);
+                            activityFeed.appendChild(feedItem);
+                        }
+                    });
+                }
+
+                // Update UI Counters with Animation
+                animateValue("stat-total-users", adminState.stats.total, totalUsers, 1000);
+                animateValue("stat-premium-users", adminState.stats.premium, premiumUsers, 1000);
+                animateValue("stat-active-sessions", adminState.stats.active, Math.floor(totalUsers * 0.6), 1000); // Mock active ratio
+
+                // Update State
+                adminState.stats = { total: totalUsers, premium: premiumUsers, active: activeSessions };
+                adminState.users = data; // Cache users
+                
+            }, (error) => {
+                console.error("Data Load Error", error);
+                showToast("Database Connection Lost", "error");
+            });
+        }
+
+        // Helper: Animate Number Counting
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            if(!obj) return;
+            
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start);
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Helper: Create Activity Feed Item HTML
+        function createActivityItem(user) {
+            const div = document.createElement('div');
+            div.className = "flex-row text-xs py-2 border-b border-gray-800 animate-slide-up";
+            div.style.alignItems = "center";
+            
+            const timeAgo = new Date(user.createdAt).toLocaleDateString();
+            
+            const roleColor = user.role === 'privileged_user' ? 'text-gold' : 'text-cyan';
+            const roleIcon = user.role === 'privileged_user' ? 'fa-crown' : 'fa-user';
+
+            div.innerHTML = `
+                <div style="flex: 1; display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 24px; height: 24px; background: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas ${roleIcon} ${roleColor}" style="font-size: 10px;"></i>
+                    </div>
+                    <span class="text-white font-bold">${user.firstName || 'User'}</span>
+                </div>
+                <div style="flex: 1;" class="text-muted">New Registration</div>
+                <div style="flex: 1;" class="text-muted">${timeAgo}</div>
+                <div style="width: 80px;">
+                    <span class="text-success font-bold">ACTIVE</span>
+                </div>
+            `;
+            return div;
+        }
+
+        /* 
+           ==========================================================================
+           25.0 - USER MANAGEMENT SYSTEM logic
+           ==========================================================================
+        */
+
+        function loadUsers() {
+            // Re-render user table from cached state or fetch new
+            const tableBody = document.getElementById('users-table-body');
+            tableBody.innerHTML = '';
+            
+            const usersRef = db.ref('users');
+            usersRef.once('value').then((snapshot) => {
+                const data = snapshot.val();
+                if(!data) {
+                    tableBody.innerHTML = '<div class="text-center p-4 text-muted">No users found in database.</div>';
+                    return;
+                }
+                
+                let count = 0;
+                Object.entries(data).forEach(([uid, user]) => {
+                    count++;
+                    const row = document.createElement('div');
+                    row.className = "flex-row p-3 hover:bg-white/5 transition-colors border-b border-gray-800 items-center text-sm";
+                    
+                    // Determine Badge
+                    let badgeClass = "bg-gray-700 text-gray-300";
+                    let badgeText = "FREE";
+                    if(user.role === 'privileged_user') {
+                        badgeClass = "bg-yellow-900 text-yellow-400 border border-yellow-600";
+                        badgeText = "ELITE";
+                    } else if (user.plan === 'premium') {
+                        badgeClass = "bg-purple-900 text-purple-300";
+                        badgeText = "PRO";
+                    }
+
+                    row.innerHTML = `
+                        <div style="width: 60px;">
+                            <img src="${user.photoURL || 'https://ui-avatars.com/api/?background=random&color=fff&name=' + (user.firstName || 'U')}" class="w-8 h-8 rounded-full">
+                        </div>
+                        <div style="flex: 2;">
+                            <div class="text-white font-bold">${user.firstName} ${user.lastName}</div>
+                            <div class="text-xs text-muted">${user.email}</div>
+                        </div>
+                        <div style="flex: 1;">
+                            <span class="px-2 py-1 rounded text-xs font-bold ${badgeClass}">${badgeText}</span>
+                        </div>
+                        <div style="flex: 1;" class="text-muted text-xs">
+                            ${new Date(user.createdAt || Date.now()).toLocaleDateString()}
+                        </div>
+                        <div style="flex: 1;">
+                            <span class="text-success text-xs"><i class="fas fa-circle" style="font-size: 8px;"></i> Active</span>
+                        </div>
+                        <div style="width: 120px; text-align: right;">
+                            <button class="btn-ghost btn-sm text-cyan" onclick="editUser('${uid}')" title="Edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn-ghost btn-sm text-danger" onclick="deleteUser('${uid}')" title="Delete"><i class="fas fa-trash"></i></button>
+                        </div>
+                    `;
+                    tableBody.appendChild(row);
+                });
+                
+                document.getElementById('user-count-display').innerText = `SHOWING ${count} RECORDS`;
+            });
+        }
+
+        function filterUsers() {
+            const query = document.getElementById('user-search').value.toLowerCase();
+            const roleFilter = document.getElementById('user-role-filter').value;
+            
+            // Basic client-side filtering (Visual only for now)
+            const rows = document.querySelectorAll('#users-table-body > div');
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                const matchesSearch = text.includes(query);
+                // Implementation of role checking would require reading data attribute on row
+                // For simplicity in single file, we search text
+                if(matchesSearch) {
+                    row.style.display = 'flex';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function deleteUser(uid) {
+            if(confirm("CRITICAL WARNING: This will permanently delete the user and all associated data. Continue?")) {
+                db.ref('users/' + uid).remove()
+                .then(() => {
+                    showToast("User Deleted Successfully", "success");
+                    loadUsers(); // Refresh
+                })
+                .catch(err => showToast("Error: " + err.message, "error"));
+            }
+        }
+
+        /* 
+           ==========================================================================
+           26.0 - PRIVILEGED USER MANAGER (NO-COMPROMISE FEATURE)
+           ==========================================================================
+        */
+
+        async function createPrivilegedUser() {
+            // Get Form Data
+            const fname = document.getElementById('priv-fname').value;
+            const lname = document.getElementById('priv-lname').value;
+            const email = document.getElementById('priv-email').value;
+            const password = document.getElementById('priv-password').value;
+
+            if(!fname || !lname || !email || !password) {
+                showToast("All fields are mandatory", "warning");
+                return;
+            }
+
+            if(password.length < 8) {
+                showToast("Password must be 8+ chars", "warning");
+                return;
+            }
+
+            toggleLoader(true, "CREATING ELITE ACCOUNT...");
+
+            try {
+                // 1. Create Auth User (Secondary App required usually, but here we simulate or use main)
+                // WARNING: In client SDK, creating a user signs you in as that user. 
+                // In a real Admin panel, we use Admin SDK (Node.js). 
+                // FOR THIS DEMO (Client Side only): We will write to DB directly and create a "Pending Auth" status
+                // Or we accept the context switch, create user, then re-login admin.
+                // BEST APPROACH FOR CLIENT-SIDE ADMIN: Write to a 'invites' node or just create the DB entry and let them 'claim' it.
+                // HOWEVER, requirements say "Admin Creates Account".
+                
+                // Workaround: We will use a secondary Firebase App instance to create user without logging out Admin
+                const secondaryApp = firebase.initializeApp(firebaseConfig, "Secondary");
+                const secondaryAuth = secondaryApp.auth();
+
+                const userCredential = await secondaryAuth.createUserWithEmailAndPassword(email, password);
+                const uid = userCredential.user.uid;
+
+                // 2. Write to Realtime Database with STRICT flags
+                const userData = {
+                    firstName: fname,
+                    lastName: lname,
+                    email: email,
+                    role: "privileged_user",     // 👑 CRITICAL ROLE
+                    plan: "max_premium",         // 👑 CRITICAL PLAN
+                    paymentRequired: false,      // 👑 BYPASS PAYMENT
+                    createdByAdmin: true,        // 👑 AUDIT FLAG
+                    createdAt: firebase.database.ServerValue.TIMESTAMP,
+                    permissions: {
+                        voice: true,
+                        home_control: true,
+                        internet: true,
+                        max_speed: true
+                    }
+                };
+
+                await db.ref('users/' + uid).set(userData);
+
+                // 3. Cleanup
+                await secondaryAuth.signOut(); // Sign out the temp user
+                await secondaryApp.delete();   // Remove secondary app instance
+
+                // 4. Success
+                toggleLoader(false);
+                showToast(`Elite User ${fname} Created Successfully`, "success");
+                document.getElementById('create-privileged-form').reset();
+                loadPrivilegedUsers(); // Refresh list
+
+            } catch (error) {
+                toggleLoader(false);
+                console.error(error);
+                showToast("Creation Failed: " + error.message, "error");
+            }
+        }
+
+        function loadPrivilegedUsers() {
+            const listContainer = document.getElementById('privileged-users-list');
+            listContainer.innerHTML = '<div class="text-center text-muted"><i class="fas fa-spinner fa-spin"></i> Syncing...</div>';
+
+            db.ref('users').orderByChild('role').equalTo('privileged_user').once('value')
+            .then(snapshot => {
+                listContainer.innerHTML = '';
+                const data = snapshot.val();
+                
+                if(!data) {
+                    listContainer.innerHTML = '<div class="text-center text-muted mt-4">No privileged users found.</div>';
+                    return;
+                }
+
+                Object.entries(data).forEach(([uid, user]) => {
+                    const item = document.createElement('div');
+                    item.className = "p-3 rounded border border-yellow-900 bg-white/5 flex-between animate-slide-up mb-2";
+                    item.innerHTML = `
+                        <div class="flex-center gap-md">
+                            <div class="w-8 h-8 rounded-full bg-gold text-black flex-center font-bold font-main text-lg">
+                                ${user.firstName.charAt(0)}
+                            </div>
+                            <div>
+                                <div class="text-white font-bold text-sm">${user.firstName} ${user.lastName}</div>
+                                <div class="text-xs text-muted">${user.email}</div>
+                            </div>
+                        </div>
+                        <div class="flex-col items-end">
+                            <div class="text-gold text-xs font-bold uppercase tracking-wider">MAX PREMIUM</div>
+                            <div class="text-xs text-muted cursor-pointer hover:text-danger" onclick="deleteUser('${uid}')">REVOKE</div>
+                        </div>
+                    `;
+                    listContainer.appendChild(item);
+                });
+            });
+        }
+
+        /* 
+           ==========================================================================
+           27.0 - TERMS & SETTINGS LOGIC
+           ==========================================================================
+        */
+
+        function publishTerms() {
+            const content = document.getElementById('terms-editor').value;
+            const version = document.getElementById('terms-version-input').value;
+            
+            if(!content || !version) {
+                showToast("Content and Version required", "warning");
+                return;
+            }
+
+            if(confirm(`Publish Version ${version}? Users will be forced to accept.`)) {
+                toggleLoader(true, "UPLOADING PROTOCOLS...");
+                
+                db.ref('terms_conditions').set({
+                    version: version,
+                    content: content,
+                    updatedAt: firebase.database.ServerValue.TIMESTAMP,
+                    updatedBy: adminState.currentUser.email
+                }).then(() => {
+                    toggleLoader(false);
+                    showToast("Terms Updated. Protocol Enforced.", "success");
+                    document.getElementById('current-terms-version').innerText = "v" + version;
+                    document.getElementById('terms-last-date').innerText = new Date().toLocaleString();
+                }).catch(err => {
+                    toggleLoader(false);
+                    showToast("Error: " + err.message, "error");
+                });
+            }
+        }
+
+        function saveVoiceSettings() {
+            const settings = {
+                defaultName: document.getElementById('system-name').value,
+                defaultLang: document.getElementById('voice-language').value,
+                updatedAt: firebase.database.ServerValue.TIMESTAMP
+            };
+            
+            toggleLoader(true, "UPDATING CORE CONFIG...");
+            db.ref('system_config/voice').update(settings).then(() => {
+                toggleLoader(false);
+                showToast("Voice Core Updated", "success");
+            });
+        }
+
+        /* 
+           ==========================================================================
+           28.0 - UI UTILITY FUNCTIONS
+           ==========================================================================
+        */
+
+        function showToast(message, type = "info") {
+            const container = document.querySelector('.toast-container');
+            const toast = document.createElement('div');
+            
+            let icon = 'fa-info-circle';
+            if(type === 'success') icon = 'fa-check-circle';
+            if(type === 'error') icon = 'fa-exclamation-triangle';
+            if(type === 'warning') icon = 'fa-bell';
+
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <div class="flex-center gap-sm">
+                    <i class="fas ${icon} text-${type === 'error' ? 'danger' : type}"></i>
+                    <span class="toast-message">${message}</span>
+                </div>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Auto Remove
+            setTimeout(() => {
+                toast.style.animation = "fadeOut 0.5s forwards";
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+        
+        // Ensure Toast Container Exists
+        if(!document.querySelector('.toast-container')) {
+            const tc = document.createElement('div');
+            tc.className = 'toast-container';
+            document.body.appendChild(tc);
+        }
+
+        // Live Clock
+        setInterval(() => {
+            // Can be added to header if needed
+        }, 1000);
+
+        // Preview Animation Function
+        function previewAnimation() {
+            const style = document.getElementById('anim-style-select').value;
+            showToast(`Previewing ${style}...`, "info");
+            // Here we would trigger the actual overlay
+            // For Admin, we simulate it via the preloader
+            toggleLoader(true, "PREVIEWING ENTRY MATRIX");
+            setTimeout(() => toggleLoader(false), 3000);
+        }
+
+        // Initialize Tooltips/Interactions
+        document.addEventListener('DOMContentLoaded', () => {
+           console.log("LOG: DOM Loaded. Waiting for Firebase...");
+           // The auth listener will trigger the flow
+        });
+
+<!-- CONTINUE IN NEXT PART -->
+<!-- CONTINUE FROM PART 5 -->
+
+     /* ==========================================================================
+   29.0 - ADVANCED SYSTEM CONTROLS (SAFE VERSION - NO CRASH)
+   ========================================================================== */
+
+// Ek safety function jo check karega ki ID maujood hai ya nahi
+function safeListener(id, event, callback) {
+    const el = document.getElementById(id);
+    if (el) {
+        el.addEventListener(event, callback);
+    } else {
+        console.warn(`System Warning: Element #${id} not found. Skipping listener.`);
+    }
+}
+
+// 1. Maintenance Mode Toggle
+safeListener('toggle-maintenance', 'change', function(e) {
+    const isMaintenance = e.target.checked;
+    if(confirm(isMaintenance ? "ACTIVATE SYSTEM LOCKDOWN?" : "DEACTIVATE LOCKDOWN?")) {
+        db.ref('system_config/maintenance').set(isMaintenance)
+        .then(() => showToast(isMaintenance ? "LOCKED" : "ONLINE", "info"))
+        .catch(err => { e.target.checked = !isMaintenance; showToast("Error: " + err.message, "error"); });
+    } else { e.target.checked = !isMaintenance; }
+});
+
+// 2. Allow New Signups Toggle
+safeListener('setting-allow-signup', 'change', function(e) {
+    db.ref('system_config/allow_signup').set(e.target.checked);
+    showToast("Signup Policy Updated", "info");
+});
+
+// 3. Force Update Toggle
+safeListener('setting-force-update', 'change', function(e) {
+    db.ref('system_config/min_version').set(e.target.checked ? "1.0.0" : "0.0.0");
+    showToast("Update Protocol Updated", "warning");
+});
+        /* 
+           ==========================================================================
+           30.0 - DATA EXPORT ENGINE (CSV GENERATOR)
+           ==========================================================================
+        */
+
+        function exportUserList() {
+            toggleLoader(true, "GENERATING ENCRYPTED CSV...");
+
+            db.ref('users').once('value').then(snapshot => {
+                const users = snapshot.val();
+                if(!users) {
+                    toggleLoader(false);
+                    showToast("No data to export", "warning");
+                    return;
+                }
+
+                // CSV Header
+                let csvContent = "data:text/csv;charset=utf-8,";
+                csvContent += "User ID,First Name,Last Name,Email,Role,Plan,Created At,Status\n";
+
+                // CSV Body
+                Object.entries(users).forEach(([uid, user]) => {
+                    const row = [
+                        uid,
+                        user.firstName,
+                        user.lastName,
+                        user.email,
+                        user.role,
+                        user.plan || 'free',
+                        new Date(user.createdAt).toISOString(),
+                        'Active'
+                    ].join(",");
+                    csvContent += row + "\r\n";
+                });
+
+                // Download Trigger
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", "jarvis_users_export_" + new Date().toISOString() + ".csv");
+                document.body.appendChild(link);
+                
+                // Simulate Processing Delay for Premium Feel
+                setTimeout(() => {
+                    link.click();
+                    document.body.removeChild(link);
+                    toggleLoader(false);
+                    showToast("Export Complete. File Downloaded.", "success");
+                }, 1500);
+            });
+        }
+
+        /* 
+           ==========================================================================
+           31.0 - VOICE UPLOAD SIMULATION (NO STORAGE RULE)
+           ==========================================================================
+        */
+
+        function triggerVoiceUpload() {
+            // Since "No Firebase Storage" is a strict rule, we handle this via URL input
+            // or Base64 (limited size). Here we implement the URL Input Modal logic.
+            
+            const url = prompt("ENTER VOICE SAMPLE URL (MP3/WAV):\n(Hosting must be external due to storage restrictions)");
+            
+            if(url && (url.startsWith('http') || url.startsWith('https'))) {
+                const name = prompt("NAME THIS VOICE MODEL:");
+                if(name) {
+                    toggleLoader(true, "LINKING AUDIO MATRIX...");
+                    
+                    const voiceId = "voice_" + Date.now();
+                    db.ref('voices/' + voiceId).set({
+                        name: name,
+                        url: url,
+                        addedBy: adminState.currentUser.email,
+                        timestamp: firebase.database.ServerValue.TIMESTAMP
+                    }).then(() => {
+                        toggleLoader(false);
+                        showToast("Voice Model Linked Successfully", "success");
+                        // Refresh UI would happen here via listener
+                    });
+                }
+            } else if (url) {
+                showToast("Invalid URL Protocol", "error");
+            }
+        }
+
+        /* 
+           ==========================================================================
+           32.0 - LIVE CHART ANIMATION LOGIC
+           ==========================================================================
+        */
+
+        // Update SVG Charts based on fake live data (CPU/Memory)
+        setInterval(() => {
+            if(adminState.currentView === 'analytics' && !document.hidden) {
+                
+                // Randomize values slightly for "Live" effect
+                const cpu = Math.floor(Math.random() * (60 - 30 + 1) + 30);
+                const memory = (Math.random() * (2.5 - 1.5) + 1.5).toFixed(1);
+                
+                // Update Text
+                // (In a full chart lib, we'd update data points)
+                // Here we rely on the CSS Pulse animation defined in Part 4
+                
+                // Log to Terminal
+                const term = document.getElementById('analytics-terminal');
+                if(term) {
+                    const logMsg = document.createElement('div');
+                    logMsg.className = "animate-slide-up";
+                    logMsg.innerHTML = `<span class="text-muted">[${new Date().toLocaleTimeString()}]</span> SYSTEM HEARTBEAT: CPU ${cpu}% | MEM ${memory}GB`;
+                    term.appendChild(logMsg);
+                    term.scrollTop = term.scrollHeight; // Auto scroll
+                    
+                    // Limit terminal lines
+                    if(term.children.length > 20) term.removeChild(term.firstChild);
+                }
+            }
+        }, 3000);
+
+        /* 
+           ==========================================================================
+           33.0 - CREDITS & COPYRIGHT PROTECTION
+           ==========================================================================
+        */
+        console.log("%c JARVIS AI ADMIN PANEL ", "background: #00f3ff; color: #000; font-size: 20px; font-weight: bold; padding: 10px; border-radius: 5px;");
+        console.log("%c Developed by Akshay ", "color: #ffd700; font-size: 14px;");
+        console.log("System Status: Operational");
+
+        /* 
+           ==========================================================================
+           34.0 - INITIALIZATION SEQUENCE
+           ==========================================================================
+        */
+        window.addEventListener('load', () => {
+    // Check for internet connection
+    if(!navigator.onLine) {
+        showToast("OFFLINE MODE DETECTED", "error");
+    }
+
+    // --- YE LINE ADD KAREIN ---
+    loadAIConfig(); 
+    // --------------------------
+
+    setTimeout(() => {
+        if(!adminState.isAuthenticated) {
+            showLoginScreen();
+        }
+    }, 1000);
+});
+async function saveAIConfig() {
+    // Exact IDs jo aapne upar HTML mein di hain
+    const primary = document.getElementById('ai-model-primary').value;
+    const secondary = document.getElementById('ai-model-secondary').value;
+    const backup = document.getElementById('ai-model-backup').value;
+    const apiKey = document.getElementById('openrouter-api-key').value;
+    const prompt = document.getElementById('ai-system-prompt').value;
+    const weather = document.getElementById('weather-api-key').value;
+
+    if (!apiKey) {
+        showToast("OpenRouter API Key Required!", "warning");
+        return;
+    }
+
+    toggleLoader(true, "VIRTUALIZING NEURAL PATHS...");
+
+    try {
+        // Firebase mein data save ho raha hai
+        await db.ref('system_config/ai_core').update({
+            model_primary: primary,
+            model_secondary: secondary,
+            model_backup: backup,
+            api_key: apiKey,
+            system_prompt: prompt,
+            weather_key: weather,
+            updatedAt: firebase.database.ServerValue.TIMESTAMP
+        });
+
+        // AGAR YE LINE CHAL GAYI -> GREEN TICK AAYEGA
+        showToast("Neural Network Online!", "success");
+        if(typeof playSound === 'function') playSound('soundSuccess');
+
+    } catch (e) {
+        showToast("Error: " + e.message, "error");
+    } finally {
+        toggleLoader(false);
+    }
+}
+// Saved keys ko wapas dikhane ke liye
+// Saved settings ko refresh ke baad wapas dikhane ke liye
+function loadAIConfig() {
+    db.ref('system_config/ai_core').once('value').then(snap => {
+        const data = snap.val();
+        if(data) {
+            // Charo boxes load honge
+            if(document.getElementById('ai-model-id')) 
+                document.getElementById('ai-model-id').value = data.model || '';
+            
+            if(document.getElementById('openrouter-api-key')) 
+                document.getElementById('openrouter-api-key').value = data.api_key || '';
+            
+            if(document.getElementById('ai-system-prompt')) 
+                document.getElementById('ai-system-prompt').value = data.system_prompt || '';
+            
+            if(document.getElementById('weather-api-key')) 
+                document.getElementById('weather-api-key').value = data.weather_key || '';
+        }
+    });
+}
+// Is line ko window.onload ke andar ya initializeAdminSession mein daal do
+// Taaki login hote hi keys dikh jayein.
+/* ==========================================================================
+   JARVIS VOICE ENGINE LOGIC (FIXED VERSION)
+   ========================================================================== */
+
+const synth = window.speechSynthesis; // Prefix added for global access
+
+// 1. Voices load karne ke liye list bharna
+function populateVoiceList() {
+    if (!synth) {
+        console.warn("Speech Synthesis not supported in this browser.");
+        return;
+    }
+    const voices = synth.getVoices();
+    const voiceSelect = document.getElementById('voice-selection-list');
+    if(!voiceSelect) return;
+    
+    // Clear and fill list
+    voiceSelect.innerHTML = '';
+    voices.forEach((voice, i) => {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = `${voice.name} (${voice.lang})`;
+        voiceSelect.appendChild(option);
+    });
+}
+
+// Voices load hone ke event handlers
+if (synth) {
+    if (synth.onvoiceschanged !== undefined) {
+        synth.onvoiceschanged = populateVoiceList;
+    }
+}
+// Force load for mobile
+setTimeout(populateVoiceList, 1500);
+
+// 2. Voice Test Function
+function testVoice() {
+    if (!synth) return showToast("Voice Engine not supported", "error");
+    
+    const voices = synth.getVoices();
+    const selectedIdx = document.getElementById('voice-selection-list').value;
+    const pitch = document.getElementById('voice-pitch').value;
+    const rate = document.getElementById('voice-rate').value;
+
+    synth.cancel(); // Purani awaaz band karo pehle
+
+    const ut = new SpeechSynthesisUtterance("Greetings Akshay. I am Jarvis. Neural systems are fully operational.");
+    if(voices[selectedIdx]) ut.voice = voices[selectedIdx];
+    ut.pitch = parseFloat(pitch);
+    ut.rate = parseFloat(rate);
+    
+    synth.speak(ut);
+}
+
+// 3. Save Voice Config to Firebase
+async function saveVoiceConfig() {
+    const voices = synth.getVoices();
+    const selectedIdx = document.getElementById('voice-selection-list').value;
+    const selectedVoice = voices[selectedIdx];
+
+    if(!selectedVoice) return showToast("Please select a voice from the list!", "warning");
+
+    toggleLoader(true, "LOCKING VOICE PROTOCOLS...");
+    try {
+        await db.ref('system_config/voice_config').set({
+            voice_name: selectedVoice.name,
+            voice_lang: selectedVoice.lang,
+            pitch: document.getElementById('voice-pitch').value,
+            rate: document.getElementById('voice-rate').value,
+            updatedAt: firebase.database.ServerValue.TIMESTAMP
+        });
+        showToast("Voice Protocol Locked!", "success");
+    } catch (e) { 
+        showToast("Error: " + e.message, "error"); 
+    } finally { 
+        toggleLoader(false); 
+    }
+}
+
+// 4. Load Saved Voice Config (Refresh ke baad)
+function loadVoiceConfig() {
+    db.ref('system_config/voice_config').once('value').then(snap => {
+        const data = snap.val();
+        if(data) {
+            setTimeout(() => {
+                const voiceSelect = document.getElementById('voice-selection-list');
+                if(voiceSelect) {
+                    const voices = synth.getVoices();
+                    for(let i=0; i<voices.length; i++) {
+                        if(voices[i].name === data.voice_name) {
+                            voiceSelect.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+                document.getElementById('voice-pitch').value = data.pitch || 0.8;
+                document.getElementById('voice-rate').value = data.rate || 0.9;
+            }, 2000);
+        }
+    });
+}
+    </script>
+
+    <!-- 
+       ==========================================================================
+       35.0 - FIREBASE SECURITY RULES (REFERENCE ONLY)
+       ==========================================================================
+       
+       ⚠️ IMPORTANT: YOU MUST PASTE THESE RULES INTO YOUR FIREBASE CONSOLE 
+       (REALTIME DATABASE -> RULES TAB) FOR THE APP TO BE SECURE.
+       
+       STRICT SECURITY PROTOCOL IMPLEMENTED BELOW:
+    -->
+    
+    <!-- 
+    {
+      "rules": {
+        ".read": "auth != null",  // Only authenticated users can read public data
+        ".write": "auth != null", // Only authenticated users can write
+
+        "admins": {
+          // Only actual admins can read/write the admin list
+          ".read": "root.child('admins').child(auth.uid).exists()",
+          ".write": "root.child('admins').child(auth.uid).exists()"
+        },
+
+        "users": {
+          // Admins can read/write all users
+          // Users can only read/write their own data
+          "$uid": {
+            ".read": "auth.uid === $uid || root.child('admins').child(auth.uid).exists()",
+            ".write": "auth.uid === $uid || root.child('admins').child(auth.uid).exists()",
+            
+            // Validate specific fields
+            "role": {
+              // Only admins can change roles to 'privileged_user' or 'admin'
+              ".validate": "newData.val() === 'user' || root.child('admins').child(auth.uid).exists()"
+            },
+            "plan": {
+               // Only admins can set plan to 'max_premium'
+              ".validate": "newData.val() !== 'max_premium' || root.child('admins').child(auth.uid).exists()"
+            }
+          }
+        },
+
+        "system_config": {
+          // Only admins can write system config
+          ".read": true,
+          ".write": "root.child('admins').child(auth.uid).exists()"
+        },
+
+        "terms_conditions": {
+          // Everyone can read, only admin writes
+          ".read": true,
+          ".write": "root.child('admins').child(auth.uid).exists()"
+        },
+
+        "voices": {
+           // Everyone can read, only admin writes
+          ".read": true,
+          ".write": "root.child('admins').child(auth.uid).exists()"
+        }
+      }
+    }
+    -->
+
+    <!-- 
+       ==========================================================================
+       36.0 - END OF DOCUMENT
+       ==========================================================================
+    -->
+
+</script>
+<script>
+        /* 
+           ==========================================================================
+           37.0 - GLOBAL NOTIFICATION BROADCASTER
+           ==========================================================================
+        */
+        async function broadcastNotification() {
+            const title = prompt("ENTER NOTIFICATION TITLE:");
+            const message = prompt("ENTER MESSAGE BODY:");
+            if (!title || !message) return;
+            toggleLoader(true, "DISPATCHING BROADCAST...");
+            try {
+                const notifId = "NOTIF_" + Date.now();
+                const broadcastData = {
+                    id: notifId, 
+                    title: title, 
+                    message: message, 
+                    timestamp: firebase.database.ServerValue.TIMESTAMP,
+                    sender: "SYSTEM_ADMIN", 
+                    type: "urgent"
+                };
+                await firebase.database().ref('global_notifications').set(broadcastData);
+                showToast("Global Broadcast Dispatched Successfully", "success");
+            } catch (error) {
+                showToast("Broadcast Failed: " + error.message, "error");
+            } finally {
+                toggleLoader(false);
+            }
+        }
+
+        /* 
+           ==========================================================================
+           38.0 - SYSTEM INTEGRITY & DEVELOPER PROTECTION
+           ==========================================================================
+        */
+        function enforceIntegrity() {
+            const creditNode = firebase.database().ref('system_info/developer');
+            creditNode.on('value', (snap) => {
+                if (snap.val() !== "Akshay") {
+                    creditNode.set("Akshay");
+                }
+            });
+        }
+
+        function finalizeAdminBoot() {
+            enforceIntegrity();
+            console.log("JARVIS ADMIN TERMINAL: READY.");
+        }
+
+        // Boot the system
+        finalizeAdminBoot();
+
+    </script> <!-- Box Band -->
+<button onclick="checkSystem()" style="position:fixed; bottom:10px; left:10px; z-index:10000; background:red; color:white; padding:5px; font-size:10px;">DEBUG SYSTEM</button>
+
+<script>
+function checkSystem() {
+    console.log("Checking DB Connection...");
+    db.ref('.info/connected').on('value', snap => {
+        if (snap.val() === true) alert("DATABASE: CONNECTED ✅");
+        else alert("DATABASE: DISCONNECTED ❌");
+    });
+    
+    db.ref('admin').once('value').then(s => {
+        alert("Admin Data Found: " + JSON.stringify(s.val()));
+    }).catch(e => alert("DB Read Error: " + e.message));
+}
+</script>
+</body>
+</html>        
