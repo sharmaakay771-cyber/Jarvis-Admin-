@@ -1,3 +1,4 @@
+      
  <!-- 
     PROJECT: JARVIS AI ASSISTANT - ADMIN PANEL
     PLATFORM: CROSS-PLATFORM (MOBILE + PC WEB APP)
@@ -1835,41 +1836,59 @@
                 </button>
             </div>
         </div>
-<!-- JARVIS VOICE LABORATORY -->
-<div class="card" style="border-top: 4px solid var(--color-royal-purple); margin-top: 25px;">
-    <h3 class="font-main text-white mb-4"><i class="fas fa-microphone-alt text-purple mr-2"></i>VOICE LABORATORY</h3>
+<!-- ==========================================================================
+   JARVIS HYBRID VOICE MATRIX (FIXED LAYOUT & CLICKABLE)
+   ========================================================================== -->
+<div class="card" style="border-top: 4px solid var(--color-purple); margin-top: 25px; overflow: visible !important;">
+    <h3 class="font-main text-white mb-4"><i class="fas fa-microphone-lines text-purple mr-2"></i>VOICE MATRIX</h3>
     
     <div class="flex-col gap-md">
-        <!-- Voice Selection -->
-        <div class="input-group">
-            <label class="text-xs text-muted uppercase" style="display:block; margin-bottom:5px;">Select Neural Voice (Male/UK preferred)</label>
-            <select id="voice-selection-list" class="input-field" style="font-size: 13px; padding: 10px;"></select>
+        <!-- 1. ElevenLabs Setup -->
+        <div class="input-group" style="margin-bottom: 20px;">
+            <input type="password" id="elevenlabs-api-key" class="input-field" placeholder=" " style="pointer-events: auto !important;">
+            <label class="input-label" style="background: #0a0a12; padding: 0 5px; z-index: 5;">ElevenLabs API Key</label>
         </div>
 
-        <!-- Pitch & Rate Controls -->
-        <div class="flex-row gap-lg" style="margin-top: 10px;">
-            <div style="flex: 1;">
-                <label class="text-xs text-muted uppercase">Voice Depth (Pitch: 0.8)</label>
-                <input type="range" id="voice-pitch" min="0.5" max="1.5" step="0.1" value="0.8" class="w-full" style="accent-color: var(--color-royal-purple);">
+        <div class="flex-row gap-sm">
+            <div class="input-group" style="flex:1">
+                <input type="text" id="voice-id-en" class="input-field" placeholder=" " style="font-size:11px;">
+                <label class="input-label" style="background: #0a0a12; padding: 0 5px; z-index: 5;">English Voice ID</label>
             </div>
-            <div style="flex: 1;">
-                <label class="text-xs text-muted uppercase">Speed (Rate: 0.9)</label>
-                <input type="range" id="voice-rate" min="0.5" max="1.5" step="0.1" value="0.9" class="w-full" style="accent-color: var(--color-royal-purple);">
+            <div class="input-group" style="flex:1">
+                <input type="text" id="voice-id-hi" class="input-field" placeholder=" " style="font-size:11px;">
+                <label class="input-label" style="background: #0a0a12; padding: 0 5px; z-index: 5;">Hindi Voice ID</label>
             </div>
         </div>
 
-        <!-- Action Buttons -->
-        <div class="flex-col gap-sm" style="margin-top: 15px;">
-            <button class="btn btn-secondary w-full" onclick="testVoice()" style="border-color: var(--color-royal-purple); color: #fff;">
-                <i class="fas fa-play"></i> TEST JARVIS VOICE
-            </button>
-            <button class="btn btn-primary w-full shadow-neon-cyan" onclick="saveVoiceConfig()">
-                <i class="fas fa-lock"></i> LOCK VOICE PROTOCOL
-            </button>
+        <!-- 2. Browser Voice Selection (CLICK FIX) -->
+        <div class="p-3 bg-glass rounded border border-cyan/10" style="margin-top: 5px; position: relative; z-index: 100;">
+            <label class="text-[10px] text-cyan uppercase font-bold mb-2 d-block">Backup Browser Voice (Local)</label>
+            <select id="voice-selection-list" class="input-field" style="height: 45px; font-size: 12px; cursor: pointer; pointer-events: auto !important; position: relative; z-index: 101;"></select>
+            
+            <div class="flex-row gap-sm mt-3">
+                <div style="flex:1">
+                    <label class="text-[10px] text-muted">Pitch: 0.8</label>
+                    <input type="range" id="voice-pitch" min="0.5" max="1.5" step="0.1" value="0.8" class="w-full">
+                </div>
+                <div style="flex:1">
+                    <label class="text-[10px] text-muted">Rate: 0.9</label>
+                    <input type="range" id="voice-rate" min="0.5" max="1.5" step="0.1" value="0.9" class="w-full">
+                </div>
+            </div>
         </div>
 
-        <!-- Spacer for mobile scrolling -->
-        <div style="height: 20px;"></div>
+        <!-- HQ Toggle -->
+        <div class="flex-between p-3 bg-purple-900/10 rounded border border-purple/30">
+            <span class="text-sm font-bold">Use ElevenLabs (HQ)</span>
+            <label class="switch">
+                <input type="checkbox" id="toggle-hq-voice">
+                <span class="slider round"></span>
+            </label>
+        </div>
+
+        <button class="btn btn-primary w-full shadow-neon-cyan" onclick="saveVoiceMatrix()" style="background:var(--color-purple)!important; border:none; margin-top: 10px;">
+            <i class="fas fa-lock"></i> LOCK VOICE PROTOCOL
+        </button>
     </div>
 </div>
 <!-- GLOBAL APP CONTROLS (Add this inside view-settings grid-container) -->
@@ -2867,8 +2886,11 @@ safeListener('setting-force-update', 'change', function(e) {
     }
 
     // --- YE LINE ADD KAREIN ---
-    loadAIConfig(); 
-    // --------------------------
+    loadAIConfig();
+// Line 2888 par ye likhein:
+loadVoiceMatrix();
+populateVoiceList(); 
+    
 
     setTimeout(() => {
         if(!adminState.isAuthenticated) {
@@ -2935,109 +2957,26 @@ function loadAIConfig() {
         }
     });
 }
-// Is line ko window.onload ke andar ya initializeAdminSession mein daal do
-// Taaki login hote hi keys dikh jayein.
-/* ==========================================================================
-   JARVIS VOICE ENGINE LOGIC (FIXED VERSION)
-   ========================================================================== */
 
-const synth = window.speechSynthesis; // Prefix added for global access
-
-// 1. Voices load karne ke liye list bharna
-function populateVoiceList() {
-    if (!synth) {
-        console.warn("Speech Synthesis not supported in this browser.");
-        return;
-    }
-    const voices = synth.getVoices();
-    const voiceSelect = document.getElementById('voice-selection-list');
-    if(!voiceSelect) return;
-    
-    // Clear and fill list
-    voiceSelect.innerHTML = '';
-    voices.forEach((voice, i) => {
-        const option = document.createElement('option');
-        option.value = i;
-        option.textContent = `${voice.name} (${voice.lang})`;
-        voiceSelect.appendChild(option);
-    });
-}
-
-// Voices load hone ke event handlers
-if (synth) {
-    if (synth.onvoiceschanged !== undefined) {
-        synth.onvoiceschanged = populateVoiceList;
-    }
-}
-// Force load for mobile
-setTimeout(populateVoiceList, 1500);
-
-// 2. Voice Test Function
-function testVoice() {
-    if (!synth) return showToast("Voice Engine not supported", "error");
-    
-    const voices = synth.getVoices();
-    const selectedIdx = document.getElementById('voice-selection-list').value;
-    const pitch = document.getElementById('voice-pitch').value;
-    const rate = document.getElementById('voice-rate').value;
-
-    synth.cancel(); // Purani awaaz band karo pehle
-
-    const ut = new SpeechSynthesisUtterance("Greetings Akshay. I am Jarvis. Neural systems are fully operational.");
-    if(voices[selectedIdx]) ut.voice = voices[selectedIdx];
-    ut.pitch = parseFloat(pitch);
-    ut.rate = parseFloat(rate);
-    
-    synth.speak(ut);
-}
-
-// 3. Save Voice Config to Firebase
-async function saveVoiceConfig() {
-    const voices = synth.getVoices();
-    const selectedIdx = document.getElementById('voice-selection-list').value;
-    const selectedVoice = voices[selectedIdx];
-
-    if(!selectedVoice) return showToast("Please select a voice from the list!", "warning");
-
-    toggleLoader(true, "LOCKING VOICE PROTOCOLS...");
-    try {
-        await db.ref('system_config/voice_config').set({
-            voice_name: selectedVoice.name,
-            voice_lang: selectedVoice.lang,
-            pitch: document.getElementById('voice-pitch').value,
-            rate: document.getElementById('voice-rate').value,
-            updatedAt: firebase.database.ServerValue.TIMESTAMP
-        });
-        showToast("Voice Protocol Locked!", "success");
-    } catch (e) { 
-        showToast("Error: " + e.message, "error"); 
-    } finally { 
-        toggleLoader(false); 
-    }
-}
-
-// 4. Load Saved Voice Config (Refresh ke baad)
-function loadVoiceConfig() {
-    db.ref('system_config/voice_config').once('value').then(snap => {
-        const data = snap.val();
-        if(data) {
+// 3. Settings Load Function
+function loadVoiceMatrix() {
+    db.ref('system_config/voice_matrix').once('value').then(snap => {
+        const d = snap.val();
+        if(d) {
+            if(document.getElementById('elevenlabs-api-key')) document.getElementById('elevenlabs-api-key').value = d.api_key || '';
+            if(document.getElementById('voice-id-en')) document.getElementById('voice-id-en').value = d.voice_en || '';
+            if(document.getElementById('voice-id-hi')) document.getElementById('voice-id-hi').value = d.voice_hi || '';
+            if(document.getElementById('toggle-hq-voice')) document.getElementById('toggle-hq-voice').checked = d.use_hq || false;
             setTimeout(() => {
-                const voiceSelect = document.getElementById('voice-selection-list');
-                if(voiceSelect) {
-                    const voices = synth.getVoices();
-                    for(let i=0; i<voices.length; i++) {
-                        if(voices[i].name === data.voice_name) {
-                            voiceSelect.selectedIndex = i;
-                            break;
-                        }
-                    }
-                }
-                document.getElementById('voice-pitch').value = data.pitch || 0.8;
-                document.getElementById('voice-rate').value = data.rate || 0.9;
+               if(document.getElementById('voice-selection-list')) document.getElementById('voice-selection-list').value = d.local_backup || '';
             }, 2000);
         }
     });
 }
+// window.onload mein loadVoiceMatrix() aur populateVoiceList() call karein
+// Is line ko window.onload ke andar ya initializeAdminSession mein daal do
+// Taaki login hote hi keys dikh jayein.
+
     </script>
 
     <!-- 
